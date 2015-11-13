@@ -1,0 +1,22 @@
+AddType application/x-font-woff .woff
+
+# Can be commented out if causes errors, see notes above.
+Options +FollowSymLinks
+
+# Nao permite que liste diretorios :D
+Options -Indexes
+
+## Mod_rewrite in use.
+RewriteEngine on
+
+RewriteCond %{HTTP_HOST} ^www\.imobiliariareichert\.com\.br
+RewriteRule (.*) http://imobiliariareichert.com.br/$1 [R=301,L]
+
+# RewriteBase /
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule (.*) index.php
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization},L]
+
+# /admin para /cms
+Redirect /admin http://imobiliariareichert.com.br/cms

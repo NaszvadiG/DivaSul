@@ -1,0 +1,65 @@
+#inner-header > ul > li:nth-child(1) > a
+{
+    border-left:none !important;
+}
+.sf-menu li a.active
+{
+    color:#ffff00 !important;
+}
+
+html, body {
+    position: relative;
+    height: 100%;
+}
+body {
+    margin: 0;
+    padding: 0;
+}
+.swiper-container {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+}
+.swiper-slide {
+    background-size: cover;
+    background-position: center;
+}
+.gallery-top {
+    height: 555px;
+    width: 100%;
+}
+.gallery-thumbs {
+    height: 155px;
+    box-sizing: border-box;
+    padding: 10px 0;
+}
+.gallery-thumbs .swiper-slide {
+    width: 25%;
+    height: 100%;
+    opacity: 0.4;
+}
+.gallery-thumbs .swiper-slide-active {
+    opacity: 1;
+}
+
+.gallery-top .swiper-button-prev
+{
+    height: 100%;
+    margin-top: -279px;
+    margin-left: -10px;
+    width: 100px;
+}
+
+.gallery-top .swiper-button-next
+{
+    height: 100%;
+    margin-top: -279px;
+    margin-right: -10px;
+    width: 100px;
+}
+
+.gallery-top .swiper-button-prev:hover,
+.gallery-top .swiper-button-next:hover
+{
+    background-color: rgba(255,255,255,0.15);
+}
