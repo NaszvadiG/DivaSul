@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset='utf-8'/>
+	<title>jQuery elevateZoom Demo</title>
+	<script src='http://serigrafia-es.com.br/arquivos/js/jquery-1.10.2.min.js.pagespeed.jm.VDIv7VBTRR.js'></script>
+	<script src='jquery.elevatezoom.js'></script>
+</head>
+<body>
+<h1>Basic Zoom Example</h1>
+<img id="zoom_01" src="http://serigrafia-es.com.br/arquivos/produtos/157/squeezesublimao_thumb.jpg" data-zoom-image="http://serigrafia-es.com.br/arquivos/produtos/157/squeezesublimao.jpg"/>
+<div id="zoom_02" style="background-image:url('http://serigrafia-es.com.br/arquivos/produtos/157/squeezesublimao_thumb.jpg');background-repeat:no-repeat;width:211px;height:174px;display:inline-block;" data-zoom-image="http://serigrafia-es.com.br/arquivos/produtos/157/squeezesublimao.jpg"></div>
+
+<br />
+<br />
+see more examples online <a href="http://www.elevateweb.co.uk/image-zoom/examples">http://www.elevateweb.co.uk/image-zoom/examples</a>
+<script>
+$('#zoom_01').elevateZoom({
+    zoomType: "inner",
+    cursor: "crosshair",
+    zoomWindowFadeIn: 500,
+    zoomWindowFadeOut: 750
+}); 
+$('#zoom_02').elevateZoom({
+    zoomType: "inner",
+    cursor: "crosshair",
+    zoomWindowFadeIn: 500,
+    zoomWindowFadeOut: 750
+}); 
+</script>
+</body>
+</html>

@@ -1,0 +1,73 @@
+.button
+{
+    display:block;
+    float:left;
+    text-indent:20px;
+    padding:5px 10px 6px 7px;
+    margin:5px 7px 5px 1px;
+    background:#f5f5f5 no-repeat 5px center;
+    border:1px solid #dedede;
+    border-top:1px solid #eee;
+    border-left:1px solid #eee;
+    font-family:"Lucida Grande", Tahoma, Arial, Verdana, sans-serif;
+    font-size:12px;
+    font-size:100%;
+    line-height:130%;
+    text-decoration:none;
+    font-weight:bold;
+    color:#565656;
+    cursor:pointer;
+}
+
+.button:hover
+{
+    background-color:#dff4ff;
+    border:1px solid #c2e1ef;
+    color:#336699;
+}
+
+.button:active
+{
+    background-color:#6299c5;
+    border:1px solid #6299c5;
+    color:#FFFFFF;
+}
+
+.button:disabled
+{
+    opacity:0.35;
+    cursor:no-drop;
+}
+
+.button.none { text-indent:0; background-image:none; }
+.button.edit { background-image:url(icons/edit.png);}
+.button.back { background-image:url(icons/back.png); }
+.button.search { background-image:url(icons/search.png); }
+.button.new { background-image:url(icons/documents.png); }
+.button.config { background-image:url(icons/wheel.png); }
+.button.next { background-image:url(icons/next.png); }
+.button.previus { background-image:url(icons/previus.png); }
+.button.baixar { background-image:url(icons/baixar.png); }
+.button.enviar_teste { background-image:url(icons/enviar_email_teste.png); }
+.button.enviar { background-image:url(icons/enviar_email.png); }
+
+.button.ok { background-image:url(icons/success.png); color:#529214; }
+.button.ok:hover{ background-color:#E6EFC2; border:1px solid #C6D880; color:#529214; }
+.button.ok:active{ background-color:#529214; border:1px solid #529214; color:#fff; }
+
+.button.add { background-image:url(icons/add1.png); color:#529214; }
+.button.add:hover{ background-color:#E6EFC2; border:1px solid #C6D880; color:#529214; }
+.button.add:active{ background-color:#529214; border:1px solid #529214; color:#fff; }
+
+.button.cancel { background-image:url(icons/cancel.png); color:#d12f19; }
+.button.cancel:hover { background-color:#fbe3e4; border:1px solid #fbc2c4; color:#d12f19; }
+.button.cancel:active{ background-color:#d12f19; border:1px solid #d12f19; color:#fff; }
+
+.button.del { background-image:url(icons/delete.png); color:#d12f19;}
+.button.del:hover { background-color:#fbe3e4; border:1px solid #fbc2c4; color:#d12f19; }
+.button.del:active{ background-color:#d12f19; border:1px solid #d12f19; color:#fff; }
+
+.button.restaurar { background-image:url(icons/restaurar.png);}
+
+.button.resultados { background-image:url(icons/resultados.png);}
+.button.resultados2 { background-image:url(icons/resultados2.png);}

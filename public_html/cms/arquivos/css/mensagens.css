@@ -1,0 +1,5 @@
+/* error/information messages */
+.msg{border:1px solid #EEC;margin-bottom:15px;padding:8px 10px 8px 35px;background:url(icons/exclamation_octagon_fram.png) no-repeat 10px 50% #FFC;}
+.msg.ok{border-color:#AD7;background-color:#DEB;background-image:url(icons/accept.png);}
+.msg.erro{border-color:#FBB;background-color:#FDD;background-image:url(icons/cross_octagon.png);}
+.msg.info{border-color:#CDF;background-color:#DEF;background-image:url(icons/exclamation.png);}

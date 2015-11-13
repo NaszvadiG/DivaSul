@@ -1,0 +1,109 @@
+*{margin:0;padding:0;font-family:helvetica,arial;color:#333;}
+body, table{font-size:11px;}
+table{border-spacing:1px;}
+
+h1{font-size:17px;}
+h2{font-size:15px;margin-bottom:10px;border-bottom:1px solid #ccc;}
+h3{font-size:13px;margin-bottom:5px;border-bottom:1px solid #ddd;}
+h4{font-size:12px;}
+
+li{list-style-type:none;}
+
+a{text-decoration:none;color:#005779;cursor:pointer;}
+a:hover{color:#1077a9;text-decoration:underline;}
+a.button:hover{text-decoration:none;}
+a img{border:0;}
+
+.clear{clear:both;visibility:hidden;height:0;overflow:hidden;line-height:0;font-size:0;}
+.tl{text-align:left;}
+.tr{text-align:right;}
+.tc{text-align:center;}
+.fl{float:left;}
+.fr{float:right;}
+.fieldset{border-bottom:1px solid #999999;background-color:#e5e5e5;padding:10px 5px;color:#333;font-weight:bold;text-align:center;}
+
+small{color:#999;font-size:10px;}
+button, input.button{cursor:pointer;}
+
+input, select, textarea, button{border:1px solid #ddd;border-top:1px solid #999;padding:3px;font-size:12px;vertical-align:middle;background-color:#fff;}
+input:hover, select:hover, textarea:hover, button:hover{border:1px solid #ffdd00;}
+input:focus, select:focus, textarea:focus, button:focus{border:1px solid #0000ff;outline:#ddddff 1px solid;}
+input.error, textarea.error, select.error{border-color:#d35757;}
+
+table{width:100%;}
+table th{background-color:#e5e5e5;}
+table td, table th{padding:5px;}
+table thead th{padding:10px 5px;border-bottom:1px solid #999;text-shadow:0 1px 0 #fff;font-size:12px;}
+table tbody th{border-right:1px solid #999;text-align:right;padding:10px;vertical-align:top;}
+table.zebra tbody tr:nth-child(2n-1) td{background-color:#f5f5f5;}
+table.zebra tbody tr:hover td{background-color:#ffffcc;}
+form table tr td, table.view tr td{background-color:#f5f5f5;}
+form table tr:hover td{background-color:#f5f5f5;}
+table.view tbody th{padding-top:5px;}
+tr.limpo th, table tbody tr.limpo td, tr.limpo:hover td{background:none;border:0;}
+/* Layout */
+body{background:#eee;}
+
+#header
+{
+	height:100px;
+	background-color:#000;
+}
+
+#header .in{width:960px;margin:0 auto;}
+#logo
+{
+    margin-top: 10px;
+    height: 50px;
+    padding-right: 70px;
+    padding-top: 30px;
+    position: absolute;
+    background:none;
+}
+
+#logo a{line-height:50px;font-size:30px;color:#fff;font-weight:normal;outline:none;}
+#logo a:hover{text-decoration:none;}
+#userbox{float:right;color:#ccc;padding:5px 10px 0 0;}
+#userbox a{text-decoration:underline;color:#ccc;}
+
+#nav
+{
+    margin:0 auto;
+    width:960px;
+    height:40px;
+}
+
+#nav li{float:left;}
+#nav li a{border-right:1px solid #CCCCCC;color:#666666;display:block;font-size:12px;height:20px;line-height:20px;margin:7px 0;padding:5px 8px;text-align:center;}
+#nav li:last-child a{border-right:none;}
+#nav li a:hover{background-color:#e5e5e5;color:#111;text-decoration:none;}
+
+#content
+{
+    width:918px;
+    border:1px solid #ccc;
+    padding:20px;
+    margin:5px auto;
+    background:#fff;
+    min-height:300px;
+}
+
+#footer
+{
+    clear:both;
+    height:50px;
+    border-top:1px solid #ccc;
+    color:#999;font-size:10px;
+    text-align:center;
+    margin-top:10px;
+    padding-top:5px;
+}
+
+ul.actions li{display:inline}
+
+//campos requeridos
+.required{color:red !important}
+
+/*Usuarios permissè™™°Úo*/
+#permissoes .modulos{float:right;width:350px;}
+#permissoes a.selecionado{background-color:#ccc;}
