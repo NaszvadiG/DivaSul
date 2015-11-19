@@ -1,2 +1,2 @@
 # CMS
-Content Management System built in CodeIgniter
+Content Management System built on CodeIgniter
