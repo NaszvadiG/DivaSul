@@ -42,9 +42,9 @@ $active_group = (defined('DB') ? DB : 'default');
 $active_record = TRUE;
 
 $db['default']['hostname'] = 'localhost';
-$db['default']['username'] = 'wwwimobi_cms';
-$db['default']['password'] = '1QW23ER45T';
-$db['default']['database'] = 'wwwimobi_cms';
+$db['default']['username'] = 'usuario';
+$db['default']['password'] = '******';
+$db['default']['database'] = 'nome_da_base';
 $db['default']['dbdriver'] = 'mysql';
 $db['default']['dbprefix'] = '';
 $db['default']['pconnect'] = FALSE;
