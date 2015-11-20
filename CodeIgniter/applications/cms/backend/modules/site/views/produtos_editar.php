@@ -1,4 +1,7 @@
 <style type="text/css">
+//campos requeridos
+.required{color:red !important;}
+
 div#imagens_existentes div.caixa_imagem,
 div#ajax_imagens div.caixa_imagem
 {
@@ -32,7 +35,7 @@ div#ajax_imagens div img.remover_imagem
     float:right;
     cursor:pointer;
     padding: 3px 3px 4px 5px;
-    background-image: url(../../../arquivos/imagens/black_30.png);
+    background-image: url('<?php echo base_url('../arquivos/imagens/black_30.png'); ?>');
     -0-border-radius: 0px 0px 0px 10px;
     -moz-border-radius: 0px 0px 0px 10px;
     -webkit-border-radius: 0px 0px 0px 10px;
@@ -64,7 +67,7 @@ $(function()
         uploader        : '<?php echo site_url('../arquivos/libs/uploadify/uploadify.php?path='.$path_temporario); ?>',
         swf             : '<?php echo site_url('../arquivos/libs/uploadify/uploadify.swf'); ?>',
         cancelImg       : '<?php echo site_url('../arquivos/libs/uploadify/cancel.png'); ?>',
-        buttonText      : " Selecionar\n imagens ",
+        buttonText      : " Selecionar imagens ",
         fileExt         : '*.JPEG;*.JPG;*.jpeg;*.jpg;*.GIF;*.gif;*.PNG;*.png',
         fileDesc        : 'Imagens',
         multi           : true,
@@ -72,13 +75,12 @@ $(function()
         method          : 'post',
         removeCompleted : true,
         sizeLimit       : 1024*1024*200, //1024*1024 => 1M
+        uploadLimit     : 12,
         width           : 120,
-        itemTemplate : '\
-            <div id="${fileID}" class="uploadify-queue-item">\
-                <div class="cancel">\
-                    <a href="javascript:$(\'#${instanceID}\').uploadify(\'cancel\', \'${fileID}\')">X</a>\
-                </div>\
-                <span class="fileName">${fileName} (${fileSize})</span><span class="data"></span>\
+        itemTemplate    : ' \
+            <div id="${fileID}" class="uploadify-queue-item"> \
+                <div class="cancel"><a href="javascript:$(\'#${instanceID}\').uploadify(\'cancel\', \'${fileID}\')">X</a></div> \
+                <span class="fileName">${fileName} (${fileSize})</span><span class="data"></span> \
             </div>',
         onError         : function(event, ID, fileObj, errorObj)
         {
@@ -86,80 +88,32 @@ $(function()
             //console.log(errorObj.type+"::"+errorObj.info);
             alert('Lamento, mas não foi possível fazer o envio deste arquivo. Tente novamente mais tarde ou contate o administrador.');
         },
+        onUploadStart : function(file)
+        {
+            // impede que clique em salvar antes de finalizar o upload
+            $('input.button.ok').attr('disabled','disabled');
+            $('input.button.ok').attr('title','Aguarde o upload das imagens para salvar...');
+        },
         onQueueComplete : function(event, data)
         {
             $.ajax(
             {
                 type: 'post',
-                async: false,
+                async: true,
                 url:'<?php echo site_url('site/produtos/ajax_obter_imagens/'.$produto['id']); ?>',
                 success: function(data)
                 {
                     $('#ajax_imagens').html(data);
-                    $('input.capa').click(function()
-                    {
-                        // Se marcar a caixa
-                        if ( $(this).attr('checked') )
-                        {
-                            // Desmarca todas as caixas
-                            $('input.capa').attr('checked', false);
-                            // Mantém marcada a caixa que foi marcada
-                            $(this).attr('checked', true);
-                        }
-                    });
                 }
             });
+            // libera o salvar
+            $('input.button.ok').removeAttr('disabled');
+            $('input.button.ok').removeAttr('title');
+        },
+        onSelectError : function()
+        {
+            alert('Não foi possível selecionar estas imagens. Lembre-se de que são permitidas até 12 imagens JPG.');
         }
-    });
-
-    // Inicia com as imagens já existentes (se for inserção ou se houver imagens temporárias(editou e não salvou))
-    if ('<?php echo $produto['id']; ?>' != '')
-    {
-        $.ajax(
-        {
-            type: 'post',
-            async: false,
-            url:'<?php echo site_url('site/produtos/ajax_obter_imagens/'.$produto['id']); ?>',
-            success: function(data)
-            {
-                $('#ajax_imagens').html(data);
-                $('input.capa').click(function()
-                {
-                    // Se marcar a caixa
-                    if ( $(this).attr('checked') )
-                    {
-                        // Desmarca todas as caixas
-                        $('input.capa').attr('checked', false);
-                        // Mantém marcada a caixa que foi marcada
-                        $(this).attr('checked', true);
-                    }
-                });
-            }
-        });
-    }
-
-    $('input.capa').on('click', function()
-    {
-        $('.capa').each(function()
-        {
-            $(this).prop('checked', false);
-        });
-        $($('#foto_capa').get(0)).attr('value', $(this).attr('data-id'));
-        $(this).prop('checked', true);
-    });
-
-    $('.limpo .ok').on('click', function()
-    {
-        if ( $('.capa:checked').length == 0 )
-        {
-            $($('.capa').get(0)).click();
-        }
-    });
-
-    $('div#imagens_existentes div img.remover_imagem').on('click', function()
-    {
-        $(this).hide();
-        $(this).show(100);
     });
 });
 </script>
@@ -196,7 +150,7 @@ if ( strlen($produto['id']) > 0 )
 {
 ?>
         <tr>
-            <th align="right">Código:</th>
+            <th align="right">Código<span class="required">*</span></th>
             <td><?php echo $produto['id'];?></td>
         </tr>
 <?php
@@ -204,21 +158,30 @@ if ( strlen($produto['id']) > 0 )
 ?>
 
         <tr>
-            <th>Categoria</th>
+            <th align="right">Referência<span class="required">*</span></th>
             <td>
-                <?php //echo form_dropdown('produto[categoria_id]', $categorias, $produto['categoria_id']);?>
 <?php
-    if ( !is_array($produto['categorias']) )
-    {
-        $produto['categorias'] = explode("','", substr($produto['categorias'],1,-1));
-    }
-    echo form_multiselect('produto[categorias][]', $categorias, $produto['categorias']);
+$data = array(
+    'name' => 'produto[referencia]',
+    'id' => 'referencia',
+    'value' => $produto['referencia'],
+    'size' => '60',
+    'title' => 'Informe a referência do produto'
+);
 ?>
+                <?php echo form_input($data);?>
             </td>
         </tr>
 
         <tr>
-            <th align="right">Título:</th>
+            <th>Categoria<span class="required">*</span></th>
+            <td>
+                <?php echo form_dropdown('produto[categoria_id]', $categorias, $produto['categoria_id']);?>
+            </td>
+        </tr>
+
+        <tr>
+            <th align="right">Título<span class="required">*</span></th>
             <td>
 <?php
 $data = array(
@@ -234,42 +197,7 @@ $data = array(
         </tr>
 
         <tr>
-            <th align="right">Referência:</th>
-            <td>
-<?php
-$data = array(
-    'name' => 'produto[referencia]',
-    'id' => 'referencia',
-    'value' => $produto['referencia'],
-    'size' => '60',
-    'title' => 'Informe a referência do produto'
-);
-?>
-                <?php echo form_input($data);?>
-            </td>
-        </tr>
-
-<?php
-/*
-        <tr>
-            <th align="right">Link:</th>
-            <td>
-<?php
-$data = array(
-    'name' => 'produto[link]',
-    'id' => 'link',
-    'value' => $produto['link'],
-    'size' => '60',
-    'title' => 'Informe o link da produto'
-);
-?>
-                <?php echo form_input($data);?>
-            </td>
-        </tr>
- */
-?>
-        <tr>
-            <th align="right">Descrição:</th>
+            <th align="right">Descrição<span class="required">*</span></th>
             <td>
 <?php
 $input_data = array(
@@ -278,7 +206,7 @@ $input_data = array(
     'value' => $produto['descricao'],
     'size' => '170',
     'rows' => '9',
-    'title' => 'Informe a introdução do produto',
+    'title' => 'Informe a descrição do produto',
     'class' => 'ckeditor'
 );
 ?>
@@ -287,7 +215,23 @@ $input_data = array(
         </tr>
 
         <tr>
-            <th>Imagens</th>
+            <th align="right">Valor<span class="required">*</span></th>
+            <td>
+<?php
+$data = array(
+    'name' => 'produto[valor]',
+    'id' => 'valor',
+    'value' => $produto['valor'],
+    'size' => '60',
+    'title' => 'Informe o valor do produto'
+);
+?>
+                <?php echo form_input($data);?>
+            </td>
+        </tr>
+
+        <tr>
+            <th>Imagens<span class="required">*</span></th>
             <td>
                 <div id="imagens_existentes">
 <?php
@@ -300,11 +244,14 @@ if ( is_array($imagens) && count($imagens) > 0 )
         $imagem_grande = str_replace('_thumb', '', $imagem);
 ?>
                     <div id="imagem_<?php echo $imagem; ?>" class="caixa_imagem">
-                        <div style="background-image:url(<?php echo site_url('../'.$path.$produto['id'].'/'.$imagem); ?>);" class="imagem">
-                            <img src="<?php echo site_url('../arquivos/css/icons/delete.png'); ?>" class="remover_imagem" id="<?php echo $imagem; ?>" title="Clique para remover esta imagem" />
-                        </div>
+                        <label for="<?php echo $k; ?>">
+                            <div style="background-image:url(<?php echo site_url('../'.$path.$produto['id'].'/'.$imagem); ?>);" class="imagem">
+                                <img src="<?php echo site_url('../arquivos/css/icons/delete.png'); ?>" class="remover_imagem" id="<?php echo $imagem; ?>" title="Clique para remover esta imagem" />
+                            </div>
+                        </label>
                         <br>
-                        <input type="checkbox" id="<?php echo $k; ?>" data-id="<?php echo $imagem; ?>" value="1" class="capa" title="Marque para definir esta imagem como capa" <?php if($imagem==$produto['foto_capa']){echo 'checked';}; ?> /><label for="<?php echo $k; ?>">Imagem capa</label>
+                        <input type="checkbox" id="<?php echo $k; ?>" data-id="<?php echo $imagem; ?>" value="1" class="capa" title="Marque para definir esta imagem como capa" <?php if($imagem==$produto['foto_capa']){echo 'checked';}; ?> />
+                        <label for="<?php echo $k; ?>">Imagem capa</label>
                     </div>
 <?php
     }
@@ -314,7 +261,7 @@ if ( is_array($imagens) && count($imagens) > 0 )
                     <br />
                     <br />
                 </div>
-                <br />Imagens ainda não salvas:
+                <br />Imagens ainda não salvas
                 <div id="ajax_imagens">
                     <div style="clear:both;"></div>
                 </div>
@@ -327,7 +274,7 @@ if ( is_array($imagens) && count($imagens) > 0 )
 
 
         <tr>
-            <th align="right">Ordem:</th>
+            <th align="right">Ordem</th>
             <td>
 <?php
 $data = array(
@@ -344,36 +291,21 @@ $data = array(
 
 
         <tr>
-            <th>Destaque Principal</th>
+            <th>Promoção<span class="required">*</span></th>
             <td>
 <?php
-// Campo Destaque Principal
+// Campo promocao
 $options = array(
     1 => 'Sim',
     0 => 'Não'
 );
 ?>
-                <?php echo form_dropdown('produto[destaque_principal]', $options, $produto['destaque_principal']);?>
+                <?php echo form_dropdown('produto[promocao]', $options, $produto['promocao']);?>
             </td>
         </tr>
 
         <tr>
-            <th>Destaque Categoria</th>
-            <td>
-<?php
-// Campo Destaque Categoria
-$options = array(
-    1 => 'Sim',
-    0 => 'Não'
-);
-?>
-                <?php echo form_dropdown('produto[destaque_categoria]', $options, $produto['destaque_categoria']);?>
-            </td>
-        </tr>
-
-
-        <tr>
-            <th>Ativo</th>
+            <th>Ativo<span class="required">*</span></th>
             <td>
 <?php
 // Campo ativo
@@ -395,9 +327,48 @@ $options = array(
         </tr>
     </table>
 <?php echo form_close(); ?>
+
 <script type="text/javascript">
 $(function()
 {
+
+
+    // Inicia com as imagens ja existentes (se for insercao ou se houver imagens temporarias(editou e nao salvou))
+    if ('<?php echo $produto['id']; ?>' != '')
+    {
+        $.ajax(
+        {
+            type: 'post',
+            async: false,
+            url:'<?php echo site_url('site/produtos/ajax_obter_imagens/'.$produto['id']); ?>',
+            success: function(data)
+            {
+                $('#ajax_imagens').html(data);
+            }
+        });
+    }
+
+    // Ao definir uma imagem como capa, garante que nenhuma outra ja esteja definida como tal
+    $('body').on('click', 'input.capa', function()
+    {
+        $('.capa').each(function()
+        {
+            $(this).prop('checked', false);
+        });
+        $($('#foto_capa').get(0)).attr('value', $(this).attr('data-id'));
+        $(this).prop('checked', true);
+    });
+
+    // Se clicar em salvar e nao tiver nenhuma definida como capa, marca a primeira
+    $('body').on('click', '.limpo .ok', function()
+    {
+        if ( $('.capa:checked').length == 0 )
+        {
+            $($('.capa').get(0)).click();
+        }
+    });
+
+    // Remove uma imagem
     $('.remover_imagem').on('click', function()
     {
         var element = $(this)
@@ -415,13 +386,12 @@ $(function()
                 }
                 else
                 {
-                    element.parent().parent().remove();
+                    element.parent().parent().parent().remove();
                 }
             }
         });
     });
 });
-
 
 function remover_imagem_temporaria(i, imagem)
 {

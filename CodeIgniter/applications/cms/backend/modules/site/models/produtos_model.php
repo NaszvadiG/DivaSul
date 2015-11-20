@@ -13,8 +13,12 @@ class Produtos_model extends Default_model
 
     function salvar($dados)
     {
-        $dados['criado'] = date('Y-m-d H:i:s');
-        $dados['criado_por'] = $this->usuario_id;
+        if ( $table_name == 'site_produtos' )
+        {
+            $dados['criado'] = date('Y-m-d H:i:s');
+            $dados['criado_por'] = $this->usuario_id;
+        }
+
         return parent::salvar($dados);
     }
 
@@ -32,4 +36,3 @@ class Produtos_model extends Default_model
         return $categorias;
     }
 }
-?>

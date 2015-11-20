@@ -7,7 +7,7 @@ if ( strlen($tipo_de_produto['id']) > 0 )
 }
 ?>
 
-<h2>Tipo de serviço - <?php echo $inserir_editar;?></h2>
+<h2>Categoria de produto - <?php echo $inserir_editar;?></h2>
 
 <?php
 // Mensagens:

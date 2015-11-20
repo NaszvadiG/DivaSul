@@ -14,27 +14,16 @@ class Produtos extends Default_controller
 
         // Carrega a model e define a tabela principal
         $this->load->model('Produtos_model');
-        $this->Produtos_model->set_table_name($this->table_name);
+        $this->load->model('Cidades_model');
 
         // Define o path das imagens
         $this->path = 'arquivos/produtos/';
 
         // Path temporário
-        $this->path_temporario = '/tmp/produtos/'.$this->usuario_id.'/';
-        if ( !is_dir('/tmp/produtos') && !mkdir('/tmp/produtos') )
+        $this->path_temporario = '/tmp/produtos_'.$this->usuario_id.'/';
+        if ( !is_dir($this->path_temporario) && !mkdir($this->path_temporario) )
         {
             $dados['error'] = 'Falha ao criar diretório temporário (produtos).';
-        }
-        else
-        {
-            if (is_dir('/tmp/produtos'))
-            {
-                $dados['error'] = '<b>ATENÇÃO!</b><br>Foram encontradas imagens ainda não salvas. Atenção ao prosseguir.';
-            }
-            if ( !is_dir($this->path_temporario) && !mkdir($this->path_temporario) )
-            {
-                $dados['error'] = 'Falha ao criar diretório temporário (produtos/'.$dados['produto']['id'].').';
-            }
         }
     
         // Define botoes extra antes da busca
@@ -63,32 +52,27 @@ class Produtos extends Default_controller
     {
         // Define a página que está
         $this->pagina_atual = $pagina_atual;
+        $this->registros_por_pagina = 10;
 
         // Aplica um ORDER BY na listagem
-        $this->ordens = array('categoria_id ASC, ordem ASC, titulo ASC');
+        $this->ordens = array('id DESC');
 
         // Define as colunas da tabela de listagem (Default já tem ID, Ativo, Ações)
         $this->colunas = array(
             array(
-                'descricao' => 'Foto Capa</a><br><small><small>clique na foto para ampliar/reduzir</small></small><a>', // Descrição (texto impresso na tela)
+                'descricao' => 'Foto Principal</a><br><small><small>clique na foto para ampliar/reduzir</small></small><a>', // Descrição (texto impresso na tela)
                 'coluna' => 'foto_capa',
                 'coluna_filtravel' => false,
                 'align' => 'center',
                 'ajax' => 'obter_foto_capa'
             ),
             array(
-                'descricao' => 'Abrir</a><br><small><small>clique para ver o anúncio</small></small><a>',
-                'coluna' => 'link',
-                'coluna_filtravel' => false,
-                'align' => 'center',
-                'ajax' => 'obter_link'
-            ),
-            array(
                 'descricao' => 'Categoria', // Descrição (texto impresso na tela)
-                'coluna' => 'categorias',
+                'coluna' => 'categoria', // Coluna no array de dados ($this->registros)
+                'coluna_sql' => 'categorias', // Coluna utilizada para ordenar/filtrar
+                'sql' => '(SELECT titulo FROM site_produtos_categorias WHERE id = site_produtos.categoria_id)',
                 'coluna_filtravel' => true,
-                'align' => 'center',
-                'ajax' => 'obter_categorias'
+                'tamanho' => 45
             ),
             array(
                 'descricao' => 'Referência', // Descrição (texto impresso na tela)
@@ -102,22 +86,13 @@ class Produtos extends Default_controller
                 'coluna_filtravel' => true,
                 'linkar_para_edicao' => true,
                 'tipo' => 'string'
-            ),
-             array(
-                'descricao' => 'Descrição',
-                'coluna' => 'descricao',
-                'coluna_filtravel' => true,
-                'linkar_para_edicao' => true,
-                'tipo' => 'string'
-            )/*,
-            array(
-                'descricao' => 'Categoria', // Descrição (texto impresso na tela)
-                'coluna' => 'categoria', // Coluna no array de dados ($this->registros)
-                'coluna_sql' => 'categorias', // Coluna utilizada para ordenar/filtrar
-                'sql' => '(SELECT titulo FROM site_produtos_categorias WHERE id = site_produtos.categorias)',
-                'coluna_filtravel' => true,
-                'tamanho' => 85
-            )*/
+            )
+        );
+
+        $this->acoes[1] = array(
+            'descricao' => 'Visualizar', // Descrição
+            'acao' => 'visualizar', // Função do controller que será chamada (ação)
+            'icone' => 'arquivos/css/icons/search.png' // Imagem do botão
         );
 
         parent::listar();
@@ -127,10 +102,7 @@ class Produtos extends Default_controller
      * Função chamada quando entrar no módulo (lista os registros)
      */
     function listar_categorias()
-    {    
-        // Habilita coluna ordem
-        $this->exibir_coluna_ordem = true;
-
+    {
         // Define botoes extra antes da busca
         $this->botoes = array(
             array(
@@ -145,6 +117,7 @@ class Produtos extends Default_controller
         );
 
         // Desabilita paginacao
+        $this->exibir_coluna_ordem = false;
         $this->desabilitar_paginacao = true;
         $this->desabilitar_buscar = true;
         $this->titulo = 'Categorias de produtos';
@@ -160,7 +133,7 @@ class Produtos extends Default_controller
         $this->Produtos_model->set_table_name($this->table_name);
 
         // Aplica um ORDER BY na listagem
-        $this->ordens = array('parent_id ASC', 'ordem ASC', 'titulo ASC');
+        $this->ordens = array('titulo ASC');
 
         // Define as colunas da tabela de listagem (Default já tem ID, Ativo, Ações)
         $this->colunas = array(
@@ -172,15 +145,11 @@ class Produtos extends Default_controller
             ),
             array(
                 'descricao' => 'Categoria Pai', // Descrição (texto impresso na tela)
-                'coluna' => 'parent_id', // Coluna no array de dados ($this->registros)
-                'coluna_filtravel' => false,
-                'tipo' => 'string'
-            ),
-            array(
-                'descricao' => 'Descrição',
-                'coluna' => 'descricao',
-                'coluna_filtravel' => false,
-                'tipo' => 'string'
+                'coluna' => 'pai', // Coluna no array de dados ($this->registros)
+                'coluna_sql' => 'parent_id', // Coluna utilizada para ordenar/filtrar
+                'sql' => "COALESCE((SELECT titulo FROM site_produtos_categorias WHERE id = site_produtos_categorias.parent_id),'-')",
+                'coluna_filtravel' => true,
+                'tamanho' => 45
             )
         );
 
@@ -213,25 +182,14 @@ class Produtos extends Default_controller
         if ( $this->input->post('submit') )
         {
             // Validação
-            //$this->form_validation->set_rules('produto[categoria_id]', 'Categoria', 'trim|required');
-            $this->form_validation->set_rules('produto[categorias]', 'Categoria', 'trim|required');
+            $this->form_validation->set_rules('produto[categoria_id]', 'Categoria', 'trim|required');
             $this->form_validation->set_rules('produto[titulo]', 'Título', 'trim|required');
             $this->form_validation->set_rules('produto[descricao]', 'Descrição', 'trim|required');
-            $this->form_validation->set_rules('produto[destaque_principal]', 'Destaque Principal', 'trim|required');
-            $this->form_validation->set_rules('produto[destaque_categoria]', 'Destaque Categoria', 'trim|required');
             $this->form_validation->set_rules('produto[ativo]', 'Ativo', 'trim|required');
             if ( $this->form_validation->run() )
             {
                 $dados['produto']['link'] = str_replace('-', '_', MY_Utils::removeSpecialChars(strtolower(utf8_decode($dados['produto']['titulo']))));
                 $dados['produto']['link'] = preg_replace('/_{2,}/','_',$dados['produto']['link']);
-                if ( is_array($dados['produto']['categorias']) )
-                {
-                    $dados['produto']['categorias'] = "'".implode("','", $dados['produto']['categorias'])."'";
-                }
-                else
-                {
-                    unset($dados['produto']['categorias']);
-                }
 
                 $ok = $this->Produtos_model->salvar($dados['produto']);
                 $dados['produto']['id'] = $ok;
@@ -311,10 +269,18 @@ class Produtos extends Default_controller
         $dados['path'] = $this->path;
         $dados['path_temporario'] = $this->path_temporario;
 
+        $dados['categorias'] = array();
         $categorias = $this->Produtos_model->listar_categorias();
         foreach ( $categorias as $categoria )
         {
-            $dados['categorias'][$categoria['id']] = $categoria['descricao'];
+            $dados['categorias'][$categoria['id']] = $categoria['titulo'];
+        }
+
+        $dados['cidades'] = array();
+        $cidades = $this->Cidades_model->listar();
+        foreach ( $cidades as $cidade )
+        {
+            $dados['cidades'][$cidade['id']] = $cidade['nome'];
         }
 
         $dados['titulo'] = $this->titulo;
@@ -450,13 +416,9 @@ class Produtos extends Default_controller
                     if ( strlen($dados['erro']) == 0 )
                     {
                         $dados['categoria']['id'] = $id;
-                        $dados['categoria']['link'] = str_replace('-', '_', MY_Utils::removeSpecialChars(strtolower(utf8_decode($dados['categoria']['titulo']))));
-                        $dados['categoria']['link'] = preg_replace('/_{2,}/','_',$dados['categoria']['link']);
-        		$dados['criado'] = date('Y-m-d H:i:s');
-		        $dados['criado_por'] = $this->usuario_id;
                         if ( $dados['categoria']['parent_id'] == 0 )
                         {
-                            unset($dados['categoria~']['parent_id']);
+                            unset($dados['categoria']['parent_id']);
                         }
 
                         $this->Produtos_model->salvar($dados['categoria']);
@@ -473,31 +435,11 @@ class Produtos extends Default_controller
                 $dados['erro'] = validation_errors();
             }
         }
+
         $dados['categorias'] = $this->Produtos_model->listar_categorias();
 
         $this->load->view('produtos_categorias', $dados);
     }
-
-    /**
-     * Remove um produto
-     * @param $id Código do produto
-     */
-    function remover_categoria($id)
-    {
-        // Carrega a model
-        $this->table_name = 'site_produtos_categorias';
-        $this->Produtos_model->set_table_name($this->table_name);
-
-        if ( $this->Produtos_model->remover($id) )
-        {
-            redirect('site/produtos/listar_categorias');
-        }
-        else
-        {
-            $this->editar_categoria($id);
-        }
-    }
-
 
     /**
      * Ação da coluna ativo
@@ -519,6 +461,26 @@ class Produtos extends Default_controller
         }
 
         if ( $this->Produtos_model->salvar($categoria) )
+        {
+            redirect('site/produtos/listar_categorias');
+        }
+        else
+        {
+            $this->editar_categoria($id);
+        }
+    }
+
+    /**
+     * Remove uma categoria de produto
+     * @param $id Código do produto
+     */
+    function remover_categoria($id)
+    {
+        // Carrega a model
+        $this->table_name = 'site_produtos_categorias';
+        $this->Produtos_model->set_table_name($this->table_name);
+
+        if ( $this->Produtos_model->remover($id) )
         {
             redirect('site/produtos/listar_categorias');
         }
@@ -593,36 +555,14 @@ class Produtos extends Default_controller
     }
 
     /**
-     * Retorna um botão com link para o anúncio do Produto
-     * @param $id Código da Produto
+     * Direciona para o anúncio do Imóvel
+     * @param $id Código da Imóvel
      */
-    function obter_link($id)
+    function visualizar($id)
     {
         $produto = $this->Produtos_model->obter($id);
-        $icone = base_url('arquivos/css/icons/internet.png');
-        $link = base_url('../produto/'.$produto['link']);
-        echo '<a href="'.$link.'" target="_new"><img src="'.$icone.'" alt="Ver anúncio" title="Clique para ver o anúncio" border="0"/></a>';
-    }
 
-    /**
-     * Retorna as categorias do Produto
-     * @param $id Código da Produto
-     */
-    function obter_categorias($id)
-    {
-        $produto = $this->Produtos_model->obter($id);
-        $ids_categorias = explode("','",substr($produto['categorias'],1,-1));
-
-        // Carrega a model
-        $this->table_name = 'site_produtos_categorias';
-        $this->Produtos_model->set_table_name($this->table_name);
-        foreach ( $ids_categorias as $cat )
-        {
-            $categoria = $this->Produtos_model->obter($cat);
-            echo $categoria['titulo'].'<br>';
-        }
-        $this->table_name = 'site_produtos';
-        $this->Produtos_model->set_table_name($this->table_name);
+        redirect(base_url('../produto/'.$produto['id'].'/'.$produto['link']));
     }
 
     /**
@@ -642,16 +582,15 @@ class Produtos extends Default_controller
             {
                 $img = urlencode(base64_encode(array_pop(explode('/', $imagem))));
                 $html .= '<div id="imagem_tmp_'.$i.'" class="caixa_imagem">';
+                $html .= '<label for="capa_'.$i.'">';
                 $html .= '<div style="background-image:url('.site_url('../cms/site/produtos/ler_imagem_temporaria/'.$img).');" class="imagem">';
                 $html .= '<img src="'.site_url('../arquivos/css/icons/delete.png').'" class="remover_imagem" id="remover_tmp_'.$i.'" title="Clique para remover esta imagem" onclick="remover_imagem_temporaria(\''.$i.'\', \''.$img.'\');" />';
                 $html .= '<input type="hidden" name="imagens['.$i.'][nome_arquivo]" value="'.$img.'" />';
                 $html .= '</div>';
+                $html .= '</label>';
                 $html .= '<br>';
-                $html .= '<!--input type="text" id="credito_'.$i.'" name="imagens['.$i.'][credito]" placeholder="Crédito desta imagem" />';
-                $html .= '<br>';
-                $html .= '<input type="text" id="legenda_'.$i.'" name="imagens['.$i.'][legenda]" placeholder="Legenda desta imagem" /-->';
-                $html .= '<br>';
-                $html .= '<input type="checkbox" id="capa_'.$i.'" name="imagens['.$i.'][capa]" value="1" class="capa" title="Marque para definir esta imagem como capa"/><label for="capa_'.$i.'">Imagem capa</label>';
+                $html .= '<input type="checkbox" data-id="'.basename($imagem).'" id="capa_'.$i.'" name="imagens['.$i.'][capa]" value="1" class="capa" title="Marque para definir esta imagem como capa"/>';
+                $html .= '<label for="capa_'.$i.'">Imagem capa</label>';
                 $html .= '</div>';
             }
         }
@@ -706,4 +645,3 @@ class Produtos extends Default_controller
         echo $ok;
     }
 }
-?>
