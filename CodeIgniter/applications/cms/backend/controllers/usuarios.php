@@ -158,7 +158,7 @@ class Usuarios extends Default_controller
             $dados['modulos'] = $this->Modulos_model->listar(array('order_by'=>'path ASC'));
 
             // Permissoes padrao
-            $dados['permissoes_padrao'] = $this->Modulos_model->listar(array('where'=>array("padrao = 't'")));
+            $dados['permissoes_padrao'] = $this->Modulos_model->listar(array('where'=>array("padrao = '1'")));
 
             $this->load->view('usuarios_permissoes', $dados);
         }
@@ -193,7 +193,7 @@ class Usuarios extends Default_controller
         $this->load->model('Modulos_model');
         $dados = $this->Modulos_model->obter($id);
 
-        $dados['padrao'] = ($dados['padrao'] == 't') ? 'f' : 't';
+        $dados['padrao'] = ($dados['padrao'] == 1) ? 0 : 1;
         $ok = $this->Modulos_model->salvar($dados);
 
         echo is_int($ok);
