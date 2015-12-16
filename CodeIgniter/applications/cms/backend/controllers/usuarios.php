@@ -79,42 +79,54 @@ class Usuarios extends Default_controller
 
     function editar($id=NULL)
     {
+        // Array de dados para a view
         $dados = array();
-        $usuario_old = array();
-        if ( $id )
+
+        // Carrega a model
+        if ( (int)$id > 0 )
         {
-            $usuario_old = $this->Usuarios_model->obter($id);
+            $dados['registro'] = $usuario = $usuario_old = $this->Usuarios_model->obter($id);
         }
+
+        // Obtém os dados
         if ( $this->input->post('submit') )
         {
-            $usuario = $this->input->post('usuario');
-            $dados['usuario_'] = $usuario;
+            // se tem post, obtém do formulário
+            $dados = $this->input->post();
+            $usuario = $dados['registro'];
+        }
 
-            $this->form_validation->set_rules('usuario[nome]', 'Nome', 'trim|required');
-            $this->form_validation->set_rules('usuario[email]', 'E-mail', 'trim|required');
-            $this->form_validation->set_rules('usuario[usuario]', 'Usuário', 'trim|required');
+        // Se tem post, salva os dados
+        if ( $this->input->post('submit') )
+        {
+            $this->form_validation->set_rules('registro[nome]', 'Nome', 'trim|required');
+            $this->form_validation->set_rules('registro[usuario]', 'Usuário', 'trim|required ');
+            $this->form_validation->set_rules('registro[senha]', 'Senha', 'trim|required');
             if ( $this->form_validation->run() )
             {
+                // Se digitou senha, MD5
                 if ( strlen($usuario['senha']) > 0 )
                 {
-                     // Se preencheu a senha, altera ela
                      $usuario['senha'] = md5($usuario['senha']);
                 }
-                elseif ( strlen($usuario_old['senha']) > 0 )
+                elseif ( strlen($usuario_old['usuario_id']) == 0 )
                 {
-                    // Se já tem senha, mantém
-                    unset($usuario['senha']);
+                    // Sem senha não permite
+                    $dados['erro'] = 'Você deve informar uma senha!';
                 }
                 else
                 {
-                    // Se senha não permite
-                    $dados['erro'] = 'Você deve informar uma senha!';
+                    unset($usuario['senha']);
                 }
-                // Sem erro, segue o baile
-                if ( strlen($dados['erro']) == 0 )
+
+                $id = $this->Usuarios_model->salvar($usuario);
+                if ( $id )
                 {
-                    $id = $this->Usuarios_model->salvar($usuario);
                     redirect('usuarios');
+                }
+                else
+                {
+                    $dados['erro'] = 'Falha ao criar usuário.';
                 }
             }
             else
@@ -122,12 +134,73 @@ class Usuarios extends Default_controller
                 $dados['erro'] = validation_errors();
             }
         }
-        elseif ( strlen($id) > 0 )
-        {
-            $dados['usuario_'] = $usuario_old;
-        }
 
-        $this->load->view('usuarios_editar', $dados);
+        // Definição dos campos
+        $campos = array();
+        // Codigo
+        $campo = array();
+        $campo['id'] = 'id';
+        $campo['name'] = 'registro[id]';
+        $campo['tamanho'] = 2;
+        $campo['type'] = 'text';
+        $campo['label'] = 'Código';
+        $campo['placeholder'] = 'Código do usuário';
+        $campo['value'] = $dados['registro']['id'];
+        if ( (int)$dados['registro']['id'] == 0 )
+        {
+            $campo['attrs'] = 'readonly';
+        }
+        $campos[] = $campo;
+        // Nome
+        $campo = array();
+        $campo['id'] = 'nome';
+        $campo['name'] = 'registro[nome]';
+        $campo['tamanho'] = 5;
+        $campo['type'] = 'text';
+        $campo['label'] = 'Nome';
+        $campo['placeholder'] = 'Nome do usuário';
+        $campo['value'] = $dados['registro']['nome'];
+        $campo['required'] = true;
+        $campos[] = $campo;
+        // E-Mail
+        $campo = array();
+        $campo['id'] = 'email';
+        $campo['name'] = 'registro[email]';
+        $campo['tamanho'] = 5;
+        $campo['type'] = 'text';
+        $campo['label'] = 'E-Mail';
+        $campo['placeholder'] = 'E-Mail do usuário';
+        $campo['value'] = $dados['registro']['email'];
+        $campo['required'] = true;
+        $campos[] = $campo;
+        // Nome de usuário
+        $campo = array();
+        $campo['id'] = 'usuario';
+        $campo['name'] = 'registro[usuario]';
+        $campo['tamanho'] = 3;
+        $campo['type'] = 'text';
+        $campo['label'] = 'Usuário';
+        $campo['placeholder'] = 'Nome de usuário';
+        $campo['value'] = $dados['registro']['usuario'];
+        $campo['required'] = true;
+        $campo['attrs'] = 'autocomplete="off"';
+        $campos[] = $campo;
+        // Senha
+        $campo = array();
+        $campo['id'] = 'senha';
+        $campo['name'] = 'registro[senha]';
+        $campo['tamanho'] = 3;
+        $campo['type'] = 'password';
+        $campo['label'] = 'Senha';
+        $campo['placeholder'] = 'Senha do usuário';
+        $campo['required'] = true;
+        $campo['attrs'] = 'autocomplete="off"';
+        $campos[] = $campo;
+
+        // Campos do formulário
+        $dados['campos'] = $campos;
+
+        parent::load_view($dados);
     }
 
     function permissoes($id)
