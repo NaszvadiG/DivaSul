@@ -23,8 +23,9 @@ if ( !empty($erro) )
         <tr class="limpo">
             <th></th>
             <td>
-                <input class="button ok" type="submit" name='file' value="Salvar" id="confirm"/>
-                <input class="button cancel" type="button" value="Cancelar" onclick="history.back(-1)">
+                <input class="btn btn-success" type="submit" name='file' value="Salvar" id="confirm"/>
+                <input class="btn btn-danger" type="button" value="Cancelar" onclick="history.back(-1)">
+            </td>
         </tr>
     </tbody>
 </table>

@@ -27,8 +27,7 @@ class Login extends CI_Controller
                 {
                     $logado = $login;
                     $this->session->set_userdata('usuario_id', $login);
-                    $this->select_site();
-                    return;
+                    redirect('login/selecionar_site');
                 }
                 else
                 {
@@ -98,7 +97,7 @@ class Login extends CI_Controller
         $this->_redirect();
     }
 
-    function trocar_site()
+    function selecionar_site()
     {
         // Se cai no trocar site e não está logado, redireciona pro login
         if ( !$this->session->userdata('usuario_id') )

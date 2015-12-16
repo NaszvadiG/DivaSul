@@ -80,7 +80,6 @@ if ( is_array($registros) && (count($registros) > 0) )
             {
         ?>
             <td align="center">
-                <ul class="actions">
         <?php
                 foreach ( $acoes as $acao )
                 {
@@ -104,11 +103,10 @@ if ( is_array($registros) && (count($registros) > 0) )
                     $link = $module.'/'.$controller.'/'.$acao['acao'].'/'.$registro['id'];
                     $image = '<img width="16px" src="'.base_url($acao['icone']).'" alt="'.$acao['acao'].'" />';
         ?>
-                    <li><?php echo anchor($link, $image, $html_attributes); ?></li>
+                    <?php echo anchor($link, $image, $html_attributes); ?>
         <?php
                 }
         ?>
-                </ul>
             </td>
         <?php
             }

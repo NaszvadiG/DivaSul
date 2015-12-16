@@ -4,37 +4,46 @@ class Template
     function header()
     {
         $CI = &get_instance();
+        $CI->load->model('Sites_model');
         $CI->load->model('Usuarios_model');
+        $CI->load->model('Modulos_model');
 
         $site_id = $CI->session->userdata('site_id');
 
         if ( !$CI->input->is_ajax_request() )
         {
             $dados['menu'] = array();
-            $dados['site_id'] = $site_id;
             $dados['usuario'] = $CI->Usuarios_model->obter(null, array('id', 'nome'));
-            $dados['site_name'] = element('titulo', $CI->db->where('id', $site_id)->get('cms_sites')->row_array());
+            $dados['site'] = $CI->Sites_model->obter($site_id);
             $dados['sites'] = current($CI->db->select('COUNT(DISTINCT site_id)', false)->from('cms_permissoes')->where('usuario_id', $CI->session->userdata('usuario_id'))->get()->row_array());
             
-            $CI->load->view('template/cabecalho'.$_GET['modo'], $dados);
+            // Obtém os admin_modules que o usuário tem permissão de acesso
+            $modulos = $CI->Usuarios_model->obter_modulos();
+            $modulo_id = $CI->session->userdata('modulo_id');
+            $dados['menu_topo'] = $this->_montar_menu($modulos, $modulo_id);
+            $dados['modulo'] = $CI->Modulos_model->obter($modulo_id);
+
+            $CI->load->view('template/cabecalho', $dados);
             if ( $CI->router->class != 'login' )
             {
-                // Obtém os admin_modules que o usuário tem permissão de acesso
-                $admin_modules = $CI->Usuarios_model->obter_modulos();
-                $dados['menu_topo'] = $this->_montar_menu($admin_modules);
+                $CI->load->view('template/topo', $dados);
             }
-            $CI->load->view('template/topo', $dados);
         }
     }
 
-    function _montar_menu($admin_modules = array())
+    function _montar_menu($modulos = array(), $modulo_ativo=NULL)
     {
         $menu = array();
-        if ( is_array($admin_modules) && count($admin_modules) > 0 )
+        if ( is_array($modulos) && count($modulos) > 0 )
         {
-            foreach ( $admin_modules as $module )
+            foreach ( $modulos as $modulo )
             {
-                $menu[] = '<li>'.anchor($module['path'], $module['titulo']).'</li>';
+                $active = '';
+                if ( $modulo['id'] == $modulo_ativo )
+                {
+                    $active = ' active';
+                }
+                $menu[] = '<li class="treeview'.$active.'">'.anchor($modulo['path'], $modulo['titulo']).'</li>';
             }
         }
 

@@ -121,6 +121,7 @@ class Default_controller extends MX_Controller
             self::COLUNA_ACOES => array(
                 'descricao' => 'Ações',
                 'tamanho' => '50',
+                'align' => 'center', // Alinhamento da coluna (<td>)
                 'funcao' => 'acoes'
             )
             // Obs.: a chave do array de colunas deve ser numéria porque é feito ksort dele
@@ -683,6 +684,17 @@ class Default_controller extends MX_Controller
         ));
 
         $this->load->view($view, $dados);
+    }
+
+    function load_view($dados=array())
+    {
+        $dados['module'] = $this->module;
+        $dados['controller'] = $this->controller;
+        $dados['titulo'] = $this->titulo;
+        $dados['funcao_editar'] = $this->funcao_editar;
+        $dados['funcao_listar'] = $this->funcao_listar;
+
+        $this->load->view('default_editar', $dados);
     }
 }
 ?>

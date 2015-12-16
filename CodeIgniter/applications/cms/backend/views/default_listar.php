@@ -21,34 +21,15 @@ div#info
 }
 
 /* Paginação */
-div#paginacao
-{
-    float:left;
-    width:70%;
-    text-align:center;
-    padding-top:10px;
-}
-
-div#voltar
-{
-    float:left;
-    width:15%;
-    padding-top:10px;
-    text-align:left;
-}
-
+div#voltar,
 div#avancar
 {
-    float:right;
-    width:15%;
     padding-top:10px;
-    text-align:right;
 }
-
-div#avancar a
+div#paginacao
 {
-    float:right;
-    width:63px;
+    text-align:center;
+    padding-top:10px;
 }
 
 .ASC
@@ -122,7 +103,7 @@ if ( !$desabilitar_paginacao )
     {
     ?>
     <div style="float:left;">
-        <?php echo anchor($module.'/'.$controller.'/'.$funcao_inserir, 'Inserir', 'class="button add" title="Inserir"'); ?>
+        <?php echo anchor($module.'/'.$controller.'/'.$funcao_inserir, '<i class="fa fa-plus-circle"></i> Cadastrar', 'class="btn btn-success" title="Inserir novo registro"'); ?>
     </div>
     <?php
     }
@@ -133,7 +114,7 @@ if ( !$desabilitar_paginacao )
     {
     ?>
     <div style="float:right;">
-        <a href="javascript:exibir_busca();" class="button search">Buscar</a>
+        <a href="javascript:exibir_busca();" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</a>
     </div>
     <?php
     }
@@ -166,26 +147,45 @@ if ( !$desabilitar_paginacao )
 <div style="clear:both;"></div>
 <div style="height:10px;"></div>
 
-<!-- Informações adicionais -->
-<?php
-    if ( is_array($info) )
-    {
-        $info = implode('<br>', $info);
-    }
-
-    echo $info;
-?>
-
 <!-- Separador -->
 <div style="clear:both;"></div>
 <div style="height:10px;"></div>
 
 <?php
+// Informações adicionais
+if ( is_array($info) )
+{
+    $info = implode('<br>', $info);
+}
+
+if ( count($filtros) > 0 || strlen($info) > 0 )
+{
+?>
+<div class="modal modal-info">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                <span aria-hidden="true">×</span></button>
+                <h4 class="modal-title">Informação:</h4>
+            </div>
+            <div class="modal-body">
+<p>
+<?php
+if ( strlen($info) > 0)
+{
+    echo $info;
+}
+
+if ( count($filtros) > 0 && strlen($info) > 0 )
+{
+    echo '<br><br>';
+}
+
 if ( count($filtros) > 0 )
 {
 ?>
-    <div class="msg info">
-    Filtrando dados onde a:<br />
+Filtrando dados onde:<br />
 <?php
     foreach ( $filtros as $k => $fltr )
     {
@@ -193,8 +193,16 @@ if ( count($filtros) > 0 )
 coluna <b><?php echo $k; ?></b> seja igual a <b><?php echo $fltr; ?></b>;<br />
 <?php
     }
+}
 ?>
+</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline pull-right" data-dismiss="modal">Fechar</button>
+            </div>
+        </div>
     </div>
+</div>
 <?php
 }
 ?>
@@ -240,7 +248,12 @@ foreach ( (array)$colunas as $coluna )
 
         if ( $coluna['funcao'] == 'ordenar' )
         {
-            $icone_coluna = '<input type="submit" title="Salvar ordem" style="background-image:url(\''.base_url('/arquivos/css/icons/save.png').'\');background-size:16px;background-repeat:no-repeat;margin-left:5px;width:16px;height:16px;" border="0" />';
+            $icone_coluna = '<button type="submit" title="Salvar ordem" class="btn" style="background:none;border:none;"><i class="fa fa-save"></i></button>';
+        }
+
+        if ( strlen($coluna['align']) == 0 )
+        {
+            $coluna['align'] = 'left';
         }
 
         // Armazena em uma variável o cabeçalho da tabela
@@ -250,7 +263,7 @@ foreach ( (array)$colunas as $coluna )
         }
         else
         {
-            $html_colunas .= '<th '.$size.' class="'.$coluna['tipo_ordem'].'">'.$coluna['descricao'].$icone_coluna.'</th>';
+            $html_colunas .= '<th '.$size.' class="'.$coluna['tipo_ordem'].'" style="text-align:'.$coluna['align'].'">'.$coluna['descricao'].$icone_coluna.'</th>';
         }
     }
 }
@@ -278,7 +291,7 @@ foreach ( (array)$colunas as $coluna )
 ?>
     </tbody>
 </table>
-    Nenhum registro. <?php if(!$desabilitar_inserir){echo anchor($module.'/'.$controller.'/'.$funcao_inserir,'Inserir novo','title="Inserir"');}?>
+    Nenhum há dados. <?php if(!$desabilitar_inserir){echo anchor($module.'/'.$controller.'/'.$funcao_inserir,'Inserir um novo?','title="Inserir"');}?>
 </div>
 <?php
 }
@@ -288,52 +301,47 @@ foreach ( (array)$colunas as $coluna )
 <?php echo form_close(); ?>
 
 <!-- Paginação - início -->
-<div id="voltar">
+<div class="row">
+    <div id="voltar" class="pull-left col-md-3">
 <?php
 if ( $pgVoltar > 0 )
 {
 ?>
-    <a href="javascript:paginacao(<?php echo $pgVoltar; ?>);" class="button previus">Voltar</a>
+        <a href="javascript:paginacao(<?php echo $pgVoltar; ?>);" class="btn btn-primary"><i class="glyphicon glyphicon-arrow-left"></i> Voltar</a>
 <?php
 }
 ?>
-</div>
+    </div>
+
 <?php
 if ( !$desabilitar_paginacao && ( $pgVoltar || $tem_mais_paginas ))
 {
 ?>
-<div id="paginacao">
+    <div id="paginacao" class="pull-left col-md-6">
+
+<?php echo form_open('', array('id' => 'form_ir_para', 'method'=>'POST')); ?>
     Exibindo página <?php echo $pagina_atual; ?> de <?php echo ceil($total_de_registros/$registros_por_pagina); ?>.<br />
-    Ir para página <?php echo form_input($irPara_field); ?> <a href="javascript:paginacao(document.getElementById('ir_para').value);">ir</a>
-</div>
-<div id="avancar">
+    Ir para página <?php echo form_input($irPara_field); ?> <a href="javascript:paginacao($('#ir_para').val());">ir</a>
+<?php echo form_close(); ?>
+    </div>
+
+    <div id="avancar" class="pull-right text-right col-md-3">
 <?php
     if ( $tem_mais_paginas )
     {
 ?>
-    <a href="javascript:paginacao(<?php echo $pgAvancar; ?>);" class="button next">Avançar</a>
+        <a href="javascript:paginacao(<?php echo $pgAvancar; ?>);" class="btn btn-primary">Avançar <i class="glyphicon glyphicon-arrow-right"></i></a>
 <?php
     }
 ?>
-</div>
+    </div>
 <?php
 }
 ?>
+</div>
 <!-- Fim - Paginação -->
 <div style="clear:both;"></div>
 <div style="height:10px;"></div>
-<div id="info">
-<?php
-if ( $total_de_registros > 0 )
-{
-    echo $total_de_registros > 1 ? 'Foram encontrados '.$total_de_registros.' registros.' :'Foi encontrado somente '.$total_de_registros.' registro.';
-}
-else
-{
-    echo 'Nenhum registro foi encontrado.';
-}
-?>
-</div>
 
 <script type="text/javascript">
 // Depois de carregada a página, carrega os valores das colunas ajax
@@ -369,6 +377,13 @@ $(document).ready(function()
     }
 ?>
     definir_acoes();
+
+    // "Ir para"
+    $('#form_ir_para').submit(function(event)
+    {
+        event.preventDefault();
+        paginacao($('#ir_para').val());
+    });
 });
 
 <!-- Ordenar pelas colunas -->
@@ -548,11 +563,12 @@ function definir_acoes()
     });
 }   
 </script>
+
+<!-- JavaScript adicional -->
+<?php echo $js; ?>
+
 <?php echo form_open($module.'/'.$controller.'/'.$function, array('id' => 'form_listar', 'method'=>'POST')); ?>
 <input type="hidden" id="ordem" name="ordem" value="<?php echo $ordem; ?>"/>
 <input type="hidden" id="pagina_atual" name="pagina_atual" value="<?php echo $pagina_atual; ?>"/>
 <input type="hidden" id="params" name="params" value="<?php echo $params; ?>"/>
 <?php echo form_close(); ?>
-
-<!-- JavaScript adicional -->
-<?php echo $js; ?>

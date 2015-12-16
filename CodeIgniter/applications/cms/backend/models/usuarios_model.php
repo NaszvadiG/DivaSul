@@ -20,7 +20,7 @@ class Usuarios_model extends Default_model
 
     function autenticar($usuario, $senha)
     {
-        $id = current($this->db->select('id')->from($this->table_name)->where('usuario', $usuario)->where('senha', $senha)->get()->row_array());
+        $id = current($this->db->select('id')->from($this->table_name)->where('LOWER(usuario)', strtolower($usuario))->where('senha', $senha)->get()->row_array());
     
         return $id;
     }
@@ -67,6 +67,13 @@ class Usuarios_model extends Default_model
         $modulos = $this->db->select('m.*')->from('cms_modulos m')->from('cms_permissoes p')->where('p.modulo_id = m.id')->where('p.usuario_id', $usuario_id)->where('p.site_id', $site_id)->order_by('m.titulo')->get()->result_array();
 
         return $modulos;
+    }
+
+    function remover_permissao($usuario_id, $modulo_id)
+    {
+        $ok = $this->db->delete('cms_permissoes', array('usuario_id' => $usuario_id, 'modulo_id' => $modulo_id));
+
+        return $ok;
     }
 }
 ?>

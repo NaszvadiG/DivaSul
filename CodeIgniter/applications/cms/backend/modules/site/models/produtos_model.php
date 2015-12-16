@@ -35,4 +35,31 @@ class Produtos_model extends Default_model
 
         return $categorias;
     }
+
+    function buscar($busca='')
+    {
+        $marcas = $this->db->select('marca')->distinct('marca')->from($this->table_name)->like('LOWER(marca)', strtolower($busca))->get()->result_array();
+        return $marcas;
+    }
+
+    function alterar_estoque($produto_id, $quantidade, $obs)
+    {
+        $dados = array(
+            'produto_id' => $produto_id,
+            'quantidade' => $quantidade,
+            'obs' => $obs
+        );
+
+        $this->db->insert('site_produtos_estoque', $dados);
+        $produto = $this->obter($produto_id);
+        $produto['estoque'] += $quantidade;
+        $this->salvar($produto);
+    }
+
+    function obter_estoque($produto_id)
+    {
+        $estoque = $this->db->select('SUM(quantidade) AS estoque_atual')->from('site_produtos_estoque')->where('produto_id', $produto_id)->get()->row_array();
+
+        return $estoque['estoque_atual'];
+    }
 }

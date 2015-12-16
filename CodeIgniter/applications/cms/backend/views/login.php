@@ -1,6 +1,8 @@
-<div style="clear:both;"></div>
+<div class="login-box">
 
-<h2>Login</h2>
+<script>
+$('body').addClass('login-page');
+</script>
 
 <?php
 // Mensagens:
@@ -15,53 +17,90 @@ if ( strlen($erro) > 0 )
 }
 // Fim das mensagens
 ?>
+    <div class="login-logo">
+        <a href="<?php echo base_url(); ?>"><b>DivaSul</b> - Área Restrita</a>
+    </div>
+    <!-- /.login-logo -->
 
-<?php echo form_open('', 'onsubmit="return valida(this);"'); ?>
-<table>
-	<tbody>
-		<tr class="limpo">
-			<th>Usuário</th>
-			<td><?php echo form_input('usuario', '', 'id="usuario"');?></td>
-		</tr>
-		<tr class="limpo">
-			<th>Senha</th>
-			<td><?php echo form_password('senha', '', 'id="senha"');?></td>
-		</tr>
-		<tr class="limpo">
-			<th></th>
-			<td>
-			    <?php echo form_submit('submit','Login','id="confirm" class="button ok"'); ?>
-		    </td>
-		</tr>
-	</tbody>
-</table>
-<?php echo form_close(); ?>
+    <div class="login-box-body">
+    <p class="login-box-msg"><img src="<?php echo base_url('../arquivos/imagens/logo.jpg'); ?>" style="width:100%;"/></p>
 
-<script type="text/javascript">
-function valida(form)
-{
-    var ok = false;
-    if ( form.usuario.value.length == 0 && form.senha.value.length == 0 )
-    {
-        alert("Por favor, preencha os campos usuário e senha.");
-        form.usuario.focus();
-    }
-    else if ( form.usuario.value.length == 0 )
-    {
-        alert("Para efetuar o login você deve informar seu usuário.");
-        form.usuario.focus();
-    }
-    else if ( form.senha.value == "" )
-    {
-        alert("Por favor, digite a sua senha para efetuar o login.");
-        form.senha.focus();
-    }
-    else
-    {
-        ok = true;
-    }
+        <?php echo form_open('', 'onsubmit="return valida(this);"'); ?>
+            <div class="form-group has-feedback">
+                <input type="text" class="form-control" placeholder="Usuário" id="usuario" name="usuario">
+                <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+            </div>
+            <div class="form-group has-feedback">
+                <input type="password" class="form-control" placeholder="Senha" id="senha" name="senha">
+                <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+            </div>
+            <div class="row">
+                <div class="col-xs-8"></div>
+                <!-- /.col -->
+                <div class="col-xs-4">
+                    <button type="submit" class="btn btn-primary btn-block btn-flat">Entrar</button>
+                </div>
+                <!-- /.col -->
+            </div>
+        <?php echo form_close(); ?>
+<!--
+        <div class="social-auth-links text-center">
+            <p>- Ou -</p>
+            <a href="#" class="btn btn-block btn-social btn-facebook btn-flat"><i class="fa fa-facebook"></i> Entre usando sua conta Facebook</a>
+            <a href="#" class="btn btn-block btn-social btn-google btn-flat"><i class="fa fa-google-plus"></i> Entre usando sua conta Google+</a>
+        </div>
+-->
+        <!-- /.social-auth-links -->
 
-    return ok;
-}
-$('#usuario').focus();
-</script>
+<!--
+        <a href="#">Esqueci minha senha</a><br>
+        <a href="register.html" class="text-center">Quero criar uma conta</a>
+-->
+
+        </div>
+        <!-- /.login-box-body -->
+    </div>
+    <!-- /.login-box -->
+
+    <!-- iCheck -->
+    <script src="<?php echo base_url(); ?>../arquivos/template/AdminLTE/plugins/iCheck/icheck.min.js"></script>
+    <script>
+    $(function()
+    {
+      $('input').iCheck(
+      {
+        checkboxClass: 'icheckbox_square-blue',
+        radioClass: 'iradio_square-blue',
+        increaseArea: '20%' // optional
+      });
+    });
+    </script>
+    <script type="text/javascript">
+    function valida(form)
+    {
+        var ok = false;
+        if ( form.usuario.value.length == 0 && form.senha.value.length == 0 )
+        {
+            alert("Por favor, preencha os campos usuário e senha.");
+            form.usuario.focus();
+        }
+        else if ( form.usuario.value.length == 0 )
+        {
+            alert("Para efetuar o login você deve informar seu usuário.");
+            form.usuario.focus();
+        }
+        else if ( form.senha.value == "" )
+        {
+            alert("Por favor, digite a sua senha para efetuar o login.");
+            form.senha.focus();
+        }
+        else
+        {
+            ok = true;
+        }
+
+        return ok;
+    }
+    $('#usuario').focus();
+    </script>
+</div>
