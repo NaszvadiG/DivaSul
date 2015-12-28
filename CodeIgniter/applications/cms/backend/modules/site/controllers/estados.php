@@ -69,8 +69,7 @@ class Estados extends Default_controller
             array(
                 'descricao' => 'País', // Descrição (texto impresso na tela)
                 'coluna' => 'pais', // Coluna no array de dados ($this->registros)
-                'coluna_sql' => 'pais_id', // Coluna utilizada para ordenar/filtrar
-                'sql' => "COALESCE((SELECT nome FROM site_paises WHERE id = site_estados.pais_id),'-')",
+                'coluna_sql' => "COALESCE((SELECT nome FROM site_paises WHERE id = site_estados.pais_id),'-')",
                 'coluna_filtravel' => true,
                 'tamanho' => 45
             )

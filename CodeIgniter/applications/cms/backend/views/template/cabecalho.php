@@ -56,6 +56,10 @@
         <script src="<?php echo base_url(); ?>../arquivos/js/respond.min.js"></script>
         <![endif]-->
 
+        <!-- bootstrap table filter -->
+        <link rel="stylesheet" href="<?php echo base_url(); ?>../arquivos/libs/bootstrap-table-filter/src/bootstrap-table-filter.css">
+        <script src="<?php echo base_url(); ?>../arquivos/libs/bootstrap-table-filter/src/bootstrap-table-filter.js"></script>
+
         <link rel="stylesheet" href="<?php echo base_url().'arquivos/css/backend.css'; ?>">
         <script src="<?php echo base_url().'arquivos/js/backend.js'; ?>"></script>
     </head>

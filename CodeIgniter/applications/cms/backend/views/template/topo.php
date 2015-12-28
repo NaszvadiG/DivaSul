@@ -5,7 +5,7 @@
     <!-- Logo -->
       <a href="<?php echo base_url(); ?>" class="logo">
       <!-- mini logo for sidebar mini 50x50 pixels -->
-      <span class="logo-mini"><b>D</b>S</span>
+      <span class="logo-mini">D<b>S</b></span>
       <!-- logo for regular state and mobile devices -->
       <span class="logo-lg"><b>Diva</b>Sul</span>
     </a>

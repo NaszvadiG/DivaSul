@@ -190,7 +190,7 @@ Filtrando dados onde:<br />
     foreach ( $filtros as $k => $fltr )
     {
 ?>
-coluna <b><?php echo $k; ?></b> seja igual a <b><?php echo $fltr; ?></b>;<br />
+coluna <b><?php echo $k; ?></b> seja igual a "<b><?php echo $fltr; ?></b>"<br />
 <?php
     }
 }

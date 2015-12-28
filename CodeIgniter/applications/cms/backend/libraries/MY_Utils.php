@@ -689,8 +689,15 @@ function vdie()
     die();
 }
 
-function ultimo_sql($db)
+function ultimo_sql($db=NULL)
 {
+    if ( is_null($db) )
+    {
+        // We need an instance of CI as we will be using some CI classes
+        $CI = &get_instance();
+        $db = $CI->db;
+    }
+
     return array_pop($db->queries);
 }
 

@@ -61,8 +61,7 @@ class Cidades extends Default_controller
             array(
                 'descricao' => 'Estado', // Descrição (texto impresso na tela)
                 'coluna' => 'estado', // Coluna no array de dados ($this->registros)
-                'coluna_sql' => 'estado_id', // Coluna utilizada para ordenar/filtrar
-                'sql' => "COALESCE((SELECT nome FROM site_estados WHERE id = site_cidades.estado_id),'-')",
+                'coluna_sql' => "COALESCE((SELECT nome FROM site_estados WHERE id = site_cidades.estado_id),'-')",
                 'coluna_filtravel' => true,
                 'tamanho' => 45
             )

@@ -58,8 +58,7 @@ class Clientes extends Default_controller
             array(
                 'descricao' => 'Cidade', // Descrição (texto impresso na tela)
                 'coluna' => 'cidade', // Coluna no array de dados ($this->registros)
-                'coluna_sql' => 'cidade_id', // Coluna utilizada para ordenar/filtrar
-                'sql' => '(SELECT nome FROM site_cidades WHERE id = site_clientes.cidade_id)',
+                'coluna_sql' => '(SELECT nome FROM site_cidades WHERE id = site_clientes.cidade_id)',
                 'coluna_filtravel' => true
             )
         );

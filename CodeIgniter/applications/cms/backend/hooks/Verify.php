@@ -12,7 +12,8 @@ class Verify
 
         if ( $class != 'login' )
         {
-            if ( !$CI->session->userdata('usuario_id') )
+            $usuario_id = $CI->session->userdata('usuario_id');
+            if ( !$usuario_id )
             {
                 $CI->session->set_flashdata('redirect_url', $current_uri);
                 redirect('login');
@@ -24,8 +25,17 @@ class Verify
                 {
                     redirect();
                 }
+                else
+                {
+                    //divasul
+                    $funcionario = $CI->db->select('*')->from('site_funcionarios')->where('usuario_id', $usuario_id)->get()->row_array();
+                    if ( $funcionario && is_array($funcionario) && $funcionario['id'] )
+                    {
+                        redirect('site/funcionarios/editar/'.$usuario_id);
+                    }
+                }
             }
-            else
+            elseif ( !($class == 'funcionarios' && $method == 'editar') )
             {
                 $module = $CI->db->where('path = \''.$modulo.'\'')->get('cms_modulos')->row_array();
                 if ( !empty($module) )

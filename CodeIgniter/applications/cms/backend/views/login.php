@@ -4,19 +4,6 @@
 $('body').addClass('login-page');
 </script>
 
-<?php
-// Mensagens:
-if ( is_array($erros) && count($erros) > 0 )
-{
-    $erro = implode('<br>', $erros);
-}
-if ( strlen($erro) > 0 )
-{
-
-    echo '<div class="msg erro">'.$erro.'</div>';
-}
-// Fim das mensagens
-?>
     <div class="login-logo">
         <a href="<?php echo base_url(); ?>"><b>DivaSul</b> - Área Restrita</a>
     </div>
@@ -24,6 +11,23 @@ if ( strlen($erro) > 0 )
 
     <div class="login-box-body">
     <p class="login-box-msg"><img src="<?php echo base_url('../arquivos/imagens/logo.jpg'); ?>" style="width:100%;"/></p>
+
+
+        <?php
+            // Mensagens:
+            if ( is_array($erros) && count($erros) > 0 )
+            {
+                $erro = implode('<br>', $erros);
+            }
+            if ( strlen($erro) > 0 )
+            {
+
+            echo '<div class="callout callout-danger">
+                    <h5>'.$erro.'</h5>
+                  </div>';
+            }
+            // Fim das mensagens
+        ?>
 
         <?php echo form_open('', 'onsubmit="return valida(this);"'); ?>
             <div class="form-group has-feedback">

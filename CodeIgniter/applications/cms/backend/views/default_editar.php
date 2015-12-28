@@ -45,7 +45,7 @@ if ( isset($campos) && is_array($campos) && count($campos) > 0 )
             $hidden = 'style="display:none"';
         }
 ?>
-                    <div class="col-md-<?php echo $campo['tamanho'] > 0 ? $campo['tamanho'] : '12'; ?>" <?php echo $hidden; ?>>
+                    <div id="campo_<?php echo $campo['id']; ?>" class="col-md-<?php echo $campo['tamanho'] > 0 ? $campo['tamanho'] : '12'; ?>" <?php echo $hidden; ?>>
                         <label for="<?php echo $campo['id']; ?>"><?php echo $campo['label']; ?> 
 <?php
         if ( $campo['required'] )
@@ -268,18 +268,22 @@ function remover_imagem_temporaria(i, imagem)
 </script>
 <?php
         }
-        elseif ( $campo['type'] == 'subdetail' )
+        elseif ( $campo['type'] == 'subdetail' && is_array($campo['colunas']) )
         {
 ?>
 <div>
     <button id="bt_add_produto" class="btn btn-app"><i class="fa fa-plus"></i> Adicionar produto</button>
-    <table>
+    <table class="zebra">
         <thead>
             <tr>
-                <th style="width:20px">Código</th>
-                <th style="width:80%">Nome</th>
-                <th style="width:20px">Quantidade</th>
-                <th style="width:20px">Ações</th>
+<?php
+            foreach ( $campo['colunas'] as $k => $col )
+            {
+?>
+                <th data-column-id="<?php echo $k; ?>" <?php echo implode(' ', $col['attr']); ?>><?php echo $col['titulo']; ?></th>
+<?php
+            }
+?>
             </tr>
         </thead>
         <tbody id="subdetail_produtos">
@@ -290,11 +294,12 @@ function remover_imagem_temporaria(i, imagem)
                 {
 ?>
             <tr>
-                <td><?php echo $reg->id; ?><input type="hidden" name="produto_id[]" value="<?php echo $reg->id; ?>"/></td>
-                <td><?php echo $reg->titulo; ?></td>
-                <td><input type="number" name="produto_quantidade[]" pattern="^\d+(\.|\,)\d{2}$" step="any" value="<?php echo $reg->quantidade; ?>"/>
-</td>
-                <td><button class="btn btn-danger bt_remover" title="Remover"><i class="fa fa-minus"></i></button></td></tr>
+<?php
+                    foreach ( $reg as $linha )
+                    {
+                        echo $linha;
+                    }
+?>
             </tr>
 <?php
                 }
@@ -376,14 +381,6 @@ foreach ( $autos as $k => $autocomplete )
                 url: '<?php echo base_url($module.'/'.$controller.'/'.$autocomplete); ?>/'+$('#<?php echo $k; ?>').val(),
                 success: function(data)
                 {
-                    /*
-                    // Se não tem, sugere o proprio
-                    if (data.length == 0)
-                    {
-                        data = $('#<?php echo $k; ?>').val();
-                    }
-                    response(data.split('|#|'));
-                     */
                     if (data.length > 0)
                     {
                         response(data.split('|#|'));

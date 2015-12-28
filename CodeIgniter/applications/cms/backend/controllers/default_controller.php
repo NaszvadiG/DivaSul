@@ -135,7 +135,6 @@ class Default_controller extends MX_Controller
                 'tamanho' => '35',
                 'coluna' => 'tem_filhos',
                 'coluna_sql' => '(SELECT tem_filhos(id))',
-                'sql' => '(SELECT tem_filhos(id))',
                 'coluna_filtravel' => false,
                 'align' => 'center',
                 'tipo' => 'boolean'
@@ -297,7 +296,7 @@ class Default_controller extends MX_Controller
         {
             if ( $coluna['coluna'] )
             {
-                $col = ($coluna['sql']) ? $coluna['sql'].' AS '.$coluna['coluna'] : $coluna['coluna'];
+                $col = ($coluna['coluna_sql']) ? $coluna['coluna_sql'].' AS '.$coluna['coluna'] : $coluna['coluna'];
                 if ( strpos($col, 'TO_CHAR') !== false )
                 {
                     $col = str_replace('TO_CHAR', 'DATE_FORMAT', $col);
@@ -369,7 +368,16 @@ class Default_controller extends MX_Controller
             // Remove as ordens do array de params
             if ( !preg_match('/^ordem_[0-9]{1,}$/', $k) )
             {
-                $filtros[$k] = $param;
+                $col = $k;
+                // Se for uma coluna SQL
+                foreach ( $this->colunas as $coluna )
+                {
+                    if ( $coluna['coluna_sql'] == urldecode($k) )
+                    {
+                        $col = $coluna['coluna'];
+                    }
+                }
+                $filtros[$col] = $param;
             }
         }
 
@@ -519,10 +527,11 @@ class Default_controller extends MX_Controller
             {
                 // Casos onde é usado ALIAS no SQL
                 $coluna['coluna'] = $coluna['coluna_sql'] ? $coluna['coluna_sql'] : $coluna['coluna'];
-                if ( $k == $coluna['coluna'] )
+                if ( in_array($k, array($coluna['coluna'], $coluna['coluna_sql'])) )
                 {
+                    vd($k);
                     // Se for 't'
-                    if ( in_array($filtro, array(true, 'true', 't')) )
+                    if ( in_array($filtro, array('true', 't')) )
                     {
                         $filtro = 1;
                     }
@@ -546,7 +555,7 @@ class Default_controller extends MX_Controller
                     // se for string => coluna ILIKE '%valor%'
                     elseif ( $coluna['tipo'] == 'string' )
                     {
-                        $where[] = "(".$k.") LIKE '%'|| ('".trim($filtro)."')||'%'";
+                        $where[] = "LOWER(".$coluna['coluna'].") LIKE LOWER('%".trim($filtro)."%')";
                     }
                     // caso contrario(integer, boolean) => coluna = 'valor'
                     else
@@ -665,7 +674,7 @@ class Default_controller extends MX_Controller
         {
             if ( $coluna['coluna'] )
             {
-                $cols[] = ($coluna['sql']) ? $coluna['sql'].' AS '.$coluna['coluna'] : $coluna['coluna'];
+                $cols[] = ($coluna['coluna_sql']) ? $coluna['coluna_sql'].' AS '.$coluna['coluna'] : $coluna['coluna'];
             }
         }
 

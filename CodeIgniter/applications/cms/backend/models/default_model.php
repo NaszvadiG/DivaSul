@@ -193,9 +193,9 @@ class Default_model extends CI_Model
      * Remove um registro da base de dados
      * @param (int) $id Código do registro a ser removido
      */
-    function remover($id)
+    function remover($id, $coluna_id='id')
     {
-        $this->db->where('id', $id);
+        $this->db->where($coluna_id, $id);
         $ok = $this->db->delete($this->table_name);
 
         return $ok;
