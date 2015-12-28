@@ -199,6 +199,15 @@ class Agenda extends Default_controller
 
         $dados['titulo'] = $this->titulo;
 
+        // Adiciona JS
+        $dados['custom_js'] = <<<HTML
+//Timepicker
+$('#hora').timepicker(
+{
+    showInputs: false
+});
+HTML;
+
       parent::load_view($dados);
     }
 

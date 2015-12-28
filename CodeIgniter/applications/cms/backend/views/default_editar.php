@@ -31,8 +31,7 @@ if ( strlen($erro) > 0 )
 <div class="box box-primary">
     <?php echo form_open_multipart(base_url($module.'/'.$controller.'/'.$funcao_editar.'/'.$registro['id']), array('role' => 'form')); ?>
         <div class="box-body">
-            <div class="form-group">
-                <div class="row">
+            <div class="row">
 <?php
 $autos = array();
 if ( isset($campos) && is_array($campos) && count($campos) > 0 )
@@ -45,8 +44,8 @@ if ( isset($campos) && is_array($campos) && count($campos) > 0 )
             $hidden = 'style="display:none"';
         }
 ?>
-                    <div id="campo_<?php echo $campo['id']; ?>" class="col-md-<?php echo $campo['tamanho'] > 0 ? $campo['tamanho'] : '12'; ?>" <?php echo $hidden; ?>>
-                        <label for="<?php echo $campo['id']; ?>"><?php echo $campo['label']; ?> 
+                 <div id="campo_<?php echo $campo['id']; ?>" class="form-group col-md-<?php echo $campo['tamanho'] > 0 ? $campo['tamanho'] : '12'; ?>" <?php echo $hidden; ?>>
+                    <label for="<?php echo $campo['id']; ?>"><?php echo $campo['label']; ?> 
 <?php
         if ( $campo['required'] )
         {
@@ -61,7 +60,7 @@ if ( isset($campos) && is_array($campos) && count($campos) > 0 )
         if ( strlen($campo['pre']) > 0 || strlen($campo['pos']) > 0 )
         {
 ?>
-<div class="input-group">
+                    <div class="input-group">
 <?php
         }
 
@@ -80,7 +79,7 @@ if ( isset($campos) && is_array($campos) && count($campos) > 0 )
             if ( $campo['foto_capa'] )
             {
 ?>
-    <input type="hidden" id="foto_capa" name="registro[foto_capa]" value="<?php echo $campo['value'];?>" />
+                        <input type="hidden" id="foto_capa" name="registro[foto_capa]" value="<?php echo $campo['value'];?>" />
 <?php
             }
 ?>
@@ -336,16 +335,15 @@ function remover_imagem_temporaria(i, imagem)
         if ( strlen($campo['pre']) > 0 || strlen($campo['pos']) > 0 )
         {
 ?>
-                        </div>
+                    </div>
 <?php
         }
 ?>
-                    </div>
+                </div>
 <?php
     }
 }
 ?>
-                </div>
             </div>
         </div>
 
