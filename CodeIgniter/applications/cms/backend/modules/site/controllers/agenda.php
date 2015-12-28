@@ -204,13 +204,13 @@ class Agenda extends Default_controller
         $dados['titulo'] = $this->titulo;
 
         // Adiciona JS
-        $dados['custom_js'] = <<<HTML
+        $dados['custom_js'] = <<<DIZZY
             //Timepicker
             $('#hora').timepicker(
             {
                 showInputs: false
             });
-HTML;
+DIZZY;
 
         parent::load_view($dados);
     }
