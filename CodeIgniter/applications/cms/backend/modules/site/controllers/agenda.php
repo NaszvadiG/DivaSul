@@ -1,12 +1,14 @@
 <?php
+
 include_once(APPPATH . 'controllers/default_controller.php');
+
 class Agenda extends Default_controller
 {
+
     private $path;
     private $path_temporario;
 
-    
-    function __construct()
+    function __construct ()
     {
         // Define a tabela principal deste módulo
         $this->table_name = 'site_agenda';
@@ -24,11 +26,10 @@ class Agenda extends Default_controller
         $this->controller = 'agenda';
     }
 
-
     /**
      * Função chamada quando entrar no módulo (lista os registros)
      */
-    function listar($pagina_atual=1)
+    function listar ($pagina_atual = 1)
     {
         // Define a página que está
         $this->pagina_atual = $pagina_atual;
@@ -39,8 +40,6 @@ class Agenda extends Default_controller
 
         // Define as colunas da tabela de listagem (Default já tem ID, Ativo, Ações)
         $this->colunas = array(
-          
-    
             array(
                 'descricao' => 'Título', // Descrição (texto impresso na tela)
                 'coluna' => 'titulo', // Coluna no array de dados ($this->registros)
@@ -59,28 +58,27 @@ class Agenda extends Default_controller
         parent::listar();
     }
 
-    function editar($id=null)
+    function editar ($id = null)
     {
-          // Array de dados para a view
+        // Array de dados para a view
         $dados = array();
 
         // Carrega a model
         $this->load->model('Agenda_model');
 
         // Obtém os dados
-        if ( $this->input->post('submit') )
+        if ($this->input->post('submit'))
         {
             // se tem post, obtém do formulário
             $dados = $this->input->post();
-        }
-        elseif ( (int)$id > 0 )
+        } elseif ((int) $id > 0)
         {
             // se tem id, obtém da base
             $dados['registro'] = $this->Produtos_model->obter($id);
         }
 
         // Se tem post, salva os dados
-        if ( $this->input->post('submit') )
+        if ($this->input->post('submit'))
         {
             // Validação
             $this->form_validation->set_rules('registro[titulo]', 'Título', 'trim|required');
@@ -88,21 +86,19 @@ class Agenda extends Default_controller
             $this->form_validation->set_rules('registro[cliente]', 'Cliente', 'trim|required');
             $this->form_validation->set_rules('registro[data]', 'Data', 'trim|required');
             $this->form_validation->set_rules('registro[hora]', 'Hora', 'trim|required');
-            if ( $this->form_validation->run() )
+            if ($this->form_validation->run())
             {
                 $dados['registro']['link'] = str_replace('-', '_', MY_Utils::removeSpecialChars(strtolower(utf8_decode($dados['agenda']['titulo']))));
-                $dados['registro']['link'] = preg_replace('/_{2,}/','_',$dados['agenda']['link']);
+                $dados['registro']['link'] = preg_replace('/_{2,}/', '_', $dados['agenda']['link']);
 
                 $ok = $this->Agenda_model->salvar($dados['agenda']);
                 $dados['agenda']['id'] = $ok;
-            }
-            else
+            } else
             {
-                if ( rtrim(trim(strip_tags(validation_errors()))) == 'Unable to access an error message corresponding to your field name.' )
+                if (rtrim(trim(strip_tags(validation_errors()))) == 'Unable to access an error message corresponding to your field name.')
                 {
                     $dados['erro'] = 'O título deve ser único. Este título já está em uso.';
-                }
-                else
+                } else
                 {
                     $dados['erro'] = validation_errors();
                 }
@@ -119,7 +115,7 @@ class Agenda extends Default_controller
         $campo['label'] = 'Código';
         $campo['placeholder'] = 'Código';
         $campo['value'] = $registro['id'];
-        if ( (int)$registro['id'] == 0 )
+        if ((int) $registro['id'] == 0)
         {
             $campo['attrs'] = 'disabled readonly';
         }
@@ -134,11 +130,12 @@ class Agenda extends Default_controller
         $campo['placeholder'] = 'Descrição';
         $campo['value'] = $registro['descricao'];
         $campos[] = $campo;
-         // Cidade
+
+        // Cidade
         $campo = array();
         $cidades = array();
         $arr_aux = $this->Cidades_model->listar();
-        foreach ( $arr_aux as $cidade)
+        foreach ($arr_aux as $cidade)
         {
             $cidades[$cidade['id']] = $cidade['nome'];
         }
@@ -150,11 +147,12 @@ class Agenda extends Default_controller
         $campo['value'] = $registro['cidade_id'];
         $campo['options'] = $cidades;
         $campos[] = $campo;
-         // Cliente
+
+        // Cliente
         $campo = array();
         $cidades = array();
         $arr_aux = $this->Clientes_model->listar();
-        foreach ( $arr_aux as $cliente)
+        foreach ($arr_aux as $cliente)
         {
             $clientes[$cliente['id']] = $cliente['nome'];
         }
@@ -166,7 +164,9 @@ class Agenda extends Default_controller
         $campo['value'] = $registro['cliente_id'];
         $campo['options'] = $clientes;
         $campos[] = $campo;
+
         // Data
+        $campo = array();
         $campo['id'] = 'data';
         $campo['tamanho'] = 3;
         $campo['type'] = 'date';
@@ -174,7 +174,9 @@ class Agenda extends Default_controller
         $campo['placeholder'] = 'Data';
         $campo['value'] = $registro['data'];
         $campos[] = $campo;
+
         // Hora
+        $campo = array();
         $campo['id'] = 'hora';
         $campo['tamanho'] = 2;
         $campo['label'] = 'Hora';
@@ -185,14 +187,16 @@ class Agenda extends Default_controller
         $campo['name'] = 'hora';
         $campo['pos'] = '<div class="input-group-addon"><i class="fa fa-clock-o"></i></div>';
         $campos[] = $campo;
+
         // Concluido
+        $campo = array();
         $campo['id'] = 'concluido';
         $campo['tamanho'] = 2;
         $campo['type'] = 'dropdown';
         $campo['label'] = 'Concluído';
         $campo['placeholder'] = 'Concluído';
         $campo['value'] = $registro['ativo'];
-        $campo['options'] = array('1'=>'Sim','0'=>'Não');
+        $campo['options'] = array('1' => 'Sim', '0' => 'Não');
         $campos[] = $campo;
 
         $dados['campos'] = $campos;
@@ -201,25 +205,25 @@ class Agenda extends Default_controller
 
         // Adiciona JS
         $dados['custom_js'] = <<<HTML
-//Timepicker
-$('#hora').timepicker(
-{
-    showInputs: false
-});
-HTML;
+            //Timepicker
+            $('#hora').timepicker(
+            {
+                showInputs: false
+            });
+        HTML;
 
-      parent::load_view($dados);
+        parent::load_view($dados);
     }
 
     /**
      * Remove um agenda
      * @param $id Código do agenda
      */
-    function remover($id)
+    function remover ($id)
     {
-     
-            parent::remover($id);
-            redirect('site/agenda');
+
+        parent::remover($id);
+        redirect('site/agenda');
     }
-    
+
 }
