@@ -210,7 +210,7 @@ class Agenda extends Default_controller
             {
                 showInputs: false
             });
-        HTML;
+HTML;
 
         parent::load_view($dados);
     }
@@ -221,7 +221,6 @@ class Agenda extends Default_controller
      */
     function remover ($id)
     {
-
         parent::remover($id);
         redirect('site/agenda');
     }
