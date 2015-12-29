@@ -25,7 +25,8 @@ class Produtos_model extends Default_model
     function kit_obter_componentes($produto_id)
     {
         $produtos = array();
-        $componentes = $this->db->select('componente_id')->from('site_produtos_kits')->where('produto_id', $produto_id)->get()->result_array();
+        $componentes = $this->db->select('*')->from('site_produtos_kits')->where('produto_id', $produto_id)->get()->result_array();
+/*
         if ( is_array($componentes) && count($componentes) > 0 )
         {
             foreach ( $componentes as $componente )
@@ -33,8 +34,9 @@ class Produtos_model extends Default_model
                 $produtos[] = $this->obter($componente['componente_id']);
             }
         }
+ */
 
-        return $produtos;
+        return $componentes;
     }
 
     function buscar($busca='')
@@ -71,10 +73,10 @@ class Produtos_model extends Default_model
         $produto = $this->obter($produto_id);
         if ( $produto['tipo_id'] == '2' )
         {
-            $produtos = $this->kit_obter_componentes($produto_id);
-            foreach ( $produtos as $produto )
+            $componentes = $this->kit_obter_componentes($produto_id);
+            foreach ( $componentes as $componente )
             {
-                $ok = $this->altera_estoque($produto['id'], $quantidade, $obs);
+                $ok = $this->altera_estoque($componente['componente_id'], $quantidade, $obs);
                 if ( !$ok )
                 {
                     break;

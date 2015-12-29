@@ -186,7 +186,7 @@ class Agenda extends Default_controller
         $campo['type'] = 'text';
         $campo['name'] = 'hora';
         $campo['pos'] = <<<HTML
-<div class="input-group-addon"><i class="fa fa-clock-o"></i></div>'
+<div class="input-group-addon"><i class="fa fa-clock-o"></i></div>
 HTML;
         $campos[] = $campo;
         // Concluido

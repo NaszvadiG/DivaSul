@@ -583,29 +583,24 @@ class Produtos extends Default_controller
         );
         $campo['colunas_editaveis'] = array('quantidade');
         $campo['json'] = 'ajax_listar_produtos';
-        $produtos = array();
+        $componentes = array();
         if ( $dados['registro']['id'] )
         {
-            $params = array(
-                'where' => array('produto_id = '.$dados['registro']['id'])
-            );
-            $this->Default_model->set_table_name('site_produtos_kits');
-            $produtos = $this->Default_model->listar($params);
+            $componentes = $this->Produtos_model->kit_obter_componentes($dados['registro']['id']);
         }
         $cols = array();
-        if ( $produtos && is_array($produtos) && count($produtos) > 0 )
+        if ( $componentes && is_array($componentes) && count($componentes) > 0 )
         {
-            foreach ( $produtos as $produto )
+            foreach ( $componentes as $componente )
             {
-                $componente = $this->Produtos_model->obter($produto['componente_id'], array('id', 'titulo','valor_compra','valor_venda_minimo','valor_venda'));
-
+                $prod = $this->Produtos_model->obter($componente['componente_id']);
                 $coluna = array();
-                $coluna[] = '<td>'.$componente['id'].'<input type="hidden" name="produto_id[]" value="'.$componente['id'].'"/></td>';
-                $coluna[] = '<td>'.$componente['titulo'].'</td>';
-                $coluna[] = '<td>R$ '.str_replace('.', ',', $componente['valor_compra']).'</td>';
-                $coluna[] = '<td>R$ '.str_replace('.', ',', $componente['valor_venda_minimo']).'</td>';
-                $coluna[] = '<td>R$ '.str_replace('.', ',', $componente['valor_venda']).'</td>';
-                $coluna[] = '<td><input type="number" name="produto_quantidade[]" pattern="^\d+(\.|\,)\d{2}$" step="any" value="'.$componente['quantidade'].'"/></td>';
+                $coluna[] = '<td>'.$prod['id'].'<input type="hidden" name="produto_id[]" value="'.$prod['id'].'"/></td>';
+                $coluna[] = '<td>'.$prod['titulo'].'</td>';
+                $coluna[] = '<td>R$ '.str_replace('.', ',', $prod['valor_compra']).'</td>';
+                $coluna[] = '<td>R$ '.str_replace('.', ',', $prod['valor_venda_minimo']).'</td>';
+                $coluna[] = '<td>R$ '.str_replace('.', ',', $prod['valor_venda']).'</td>';
+                $coluna[] = '<td><input type="number" name="produto_quantidade[]" pattern="^\d+(\.|\,)\d{2}$" step="any" value="'.$componente['quantidade'].'" class="input_quantidade"/></td>';
                 $coluna[] = '<td><button class="btn btn-danger bt_remover" title="Remover"><i class="fa fa-trash"></i></button></td>';
                 $cols[] = $coluna;
             }
@@ -774,7 +769,7 @@ $('body').on('click', '.bt_add', function()
         <td>'+valor_compra+'</td>\
         <td>'+valor_venda_minimo+'</td>\
         <td>'+valor_venda+'</td>\
-        <td><input type="number" name="produto_quantidade[]" pattern="^\d+(\.|\,)\d{2}$" step="any" value="1"/>\
+        <td><input type="number" name="produto_quantidade[]" pattern="^\d+(\.|\,)\d{2}$" step="any" class="input_quantidade" value="1"/>\
 </td>\
         <td><button class="btn btn-danger bt_remover" title="Remover"><i class="fa fa-trash"></i></button></td>\
     </tr>');
@@ -786,32 +781,7 @@ $('body').on('click', '.bt_add', function()
     $('#valor_compra').val((_valor_compra + +valor_compra.replace('R$ ', '').replace(',', '.')).toFixed(2));
     $('#valor_venda_minimo').val((_valor_venda_minimo + +valor_venda_minimo.replace('R$ ', '').replace(',', '.')).toFixed(2));
     $('#valor_venda').val((_valor_venda + +valor_venda.replace('R$ ', '').replace(',', '.')).toFixed(2));
-
-/*
-    $.ajax(
-    {
-        type: 'POST',
-        url: '%url_ajax_precos%',
-        data: {id:id},
-        success: function(data)
-        {
-            valores = data.split(';');
-
-            //atualiza campo Valor de compra
-            var produto_valor_compra = +valores[0];
-            $('#valor_compra').val((_valor_compra+produto_valor_compra).toFixed(2));
-
-            //atualiza campo Valor minimo p/ venda
-            var produto_valor_venda_minimo = +valores[1];
-            $('#valor_venda_minimo').val((_valor_venda_minimo+produto_valor_venda_minimo).toFixed(2));
-
-            //atualiza campo Valor venda atual
-            var produto_valor_venda = +valores[2];
-            $('#valor_venda').val((_valor_venda+produto_valor_venda).toFixed(2));
-        }
-    });
-*/
-})
+});
 
 $('body').on('click', '.bt_remover', function(event)
 {
@@ -832,7 +802,45 @@ $('body').on('click', '.bt_remover', function(event)
     $('#valor_compra').val((_valor_compra - +valor_compra.replace('R$ ', '').replace(',', '.')).toFixed(2));
     $('#valor_venda_minimo').val((_valor_venda_minimo - +valor_venda_minimo.replace('R$ ', '').replace(',', '.')).toFixed(2));
     $('#valor_venda').val((_valor_venda - +valor_venda.replace('R$ ', '').replace(',', '.')).toFixed(2));
-})
+});
+
+$('body').on('keyup', '.input_quantidade', function(event)
+{
+    // Dados do produto
+    var valor_compra = $($(this).parent().parent().children()[2]).html().trim();
+    var valor_venda_minimo = $($(this).parent().parent().children()[3]).html().trim();
+    var valor_venda = $($(this).parent().parent().children()[4]).html().trim();
+console.log($(this));
+
+    // Valores atuais
+    var _valor_compra = $('#valor_compra').val();
+    var _valor_venda_minimo = $('#valor_venda_minimo').val();
+    var _valor_venda = $('#valor_venda').val();
+
+    // Atualiza os valores
+    $('#valor_compra').val((_valor_compra + +valor_compra.replace('R$ ', '').replace(',', '.')).toFixed(2));
+    $('#valor_venda_minimo').val((_valor_venda_minimo + +valor_venda_minimo.replace('R$ ', '').replace(',', '.')).toFixed(2));
+    $('#valor_venda').val((_valor_venda + +valor_venda.replace('R$ ', '').replace(',', '.')).toFixed(2));
+});
+
+$('body').on('change', '.input_quantidade', function(event)
+{
+    // Dados do produto
+    var valor_compra = $($(this).parent().parent().children()[2]).html().trim();
+    var valor_venda_minimo = $($(this).parent().parent().children()[3]).html().trim();
+    var valor_venda = $($(this).parent().parent().children()[4]).html().trim();
+console.log($(this));
+
+    // Valores atuais
+    var _valor_compra = $('#valor_compra').val();
+    var _valor_venda_minimo = $('#valor_venda_minimo').val();
+    var _valor_venda = $('#valor_venda').val();
+
+    // Atualiza os valores
+    $('#valor_compra').val((_valor_compra + +valor_compra.replace('R$ ', '').replace(',', '.')).toFixed(2));
+    $('#valor_venda_minimo').val((_valor_venda_minimo + +valor_venda_minimo.replace('R$ ', '').replace(',', '.')).toFixed(2));
+    $('#valor_venda').val((_valor_venda + +valor_venda.replace('R$ ', '').replace(',', '.')).toFixed(2));
+});
 
 $('#titulo').focus();
 HTML;
