@@ -32,6 +32,21 @@ function hide_mini_loading()
 
 $(window).load(function()
 {
+    // Exibe modal
+    if ( $('.modal .modal-body p').length > 0 )
+    {
+        $('.modal').show(250);
+    }
+    // Fecha a mensagem de erro
+    $('body').on('click', '.modal .modal-footer button', function()
+    {
+        $(this).parent().parent().parent().parent().remove();
+    });
+    $('body').on('click', '.modal .modal-header button', function()
+    {
+        $(this).parent().parent().parent().parent().remove();
+    });
+
     // Imagens/galerias
     if ( $("a[rel^='prettyPhoto']").length > 0 )
     {

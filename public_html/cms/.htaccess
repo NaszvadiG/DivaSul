@@ -1,7 +1,7 @@
 # Can be commented out if causes errors, see notes above.
 Options +FollowSymLinks
 
-# Não permite que liste diretorios :D
+# Nao permite que liste diretorios :D
 Options -Indexes
 
 ## Mod_rewrite in use.
