@@ -31,8 +31,7 @@ class Agenda extends Default_controller
      */
     function listar ($pagina_atual = 1)
     {
-        echo
-        '
+        $dados['html'] = '
         <div class="col-md-9">
            <div class="box box-primary">
              <div class="box-body no-padding">
@@ -53,7 +52,7 @@ class Agenda extends Default_controller
               title: $.trim($(this).text())
             };
 
-            $(this).data('eventObject', eventObject);
+            $(this).data("eventObject", eventObject);
 
             $(this).draggable({
               zIndex: 1070,
@@ -184,6 +183,7 @@ class Agenda extends Default_controller
       });
     </script>
 ';
+        $this->load->view('html', $dados);
     }
 
     function editar ($id = null)
