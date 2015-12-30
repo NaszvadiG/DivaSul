@@ -8,25 +8,25 @@
         <title>Área Restrita</title>
 
         <!-- Favicon -->
-        <link rel="shortcut icon" href="<?php echo base_url().'../arquivos/icones_dos_sites/'.($site_id?$site_id:1).'.png'; ?>" />
+        <link rel="shortcut icon" href="<?php echo base_url() . '../arquivos/icones_dos_sites/' . ($site_id ? $site_id : 1) . '.png'; ?>" />
 
         <!-- jQuery -->
-        <script type="text/javascript" src="<?php echo base_url().'../arquivos/libs/jquery-1.11.3.min.js'; ?>"></script>
+        <script type="text/javascript" src="<?php echo base_url() . '../arquivos/libs/jquery-1.11.3.min.js'; ?>"></script>
 
         <!-- jQuery UI -->
-        <script type="text/javascript" src="<?php echo base_url().'../arquivos/libs/jquery-ui/jquery-ui.min.js'; ?>"></script>
-        <link rel="stylesheet" href="<?php echo base_url().'../arquivos/libs/jquery-ui/jquery-ui.min.css'; ?>" type="text/css" media="screen" charset="utf-8" />
+        <script type="text/javascript" src="<?php echo base_url() . '../arquivos/libs/jquery-ui/jquery-ui.min.js'; ?>"></script>
+        <link rel="stylesheet" href="<?php echo base_url() . '../arquivos/libs/jquery-ui/jquery-ui.min.css'; ?>" type="text/css" media="screen" charset="utf-8" />
 
         <!-- Adiciona o editor like a Word nos campos textarea (com class="ckeditor") -->
-        <script type="text/javascript" src="<?php echo base_url().'../arquivos/libs/ckeditor/ckeditor.js'; ?>"></script>
+        <script type="text/javascript" src="<?php echo base_url() . '../arquivos/libs/ckeditor/ckeditor.js'; ?>"></script>
 
         <!-- LIGHTBOX -->
-        <link rel="stylesheet" href="<?php echo base_url().'../arquivos/libs/prettyPhoto/css/prettyPhoto.min.css'; ?>" type="text/css" media="screen" title="prettyPhoto main stylesheet" charset="utf-8" />
-        <script src="<?php echo base_url().'../arquivos/libs/prettyPhoto/js/jquery.prettyPhoto.min.js'; ?>" type="text/javascript" charset="utf-8"></script>
+        <link rel="stylesheet" href="<?php echo base_url() . '../arquivos/libs/prettyPhoto/css/prettyPhoto.min.css'; ?>" type="text/css" media="screen" title="prettyPhoto main stylesheet" charset="utf-8" />
+        <script src="<?php echo base_url() . '../arquivos/libs/prettyPhoto/js/jquery.prettyPhoto.min.js'; ?>" type="text/javascript" charset="utf-8"></script>
 
         <!-- Uploadify -->
-        <link href="<?php echo base_url().'../arquivos/libs/uploadify/uploadify.css'; ?>" type="text/css" rel="stylesheet" />
-        <script type="text/javascript" src="<?php echo base_url().'../arquivos/libs/uploadify/jquery.uploadify.min.js'; ?>"></script>
+        <link href="<?php echo base_url() . '../arquivos/libs/uploadify/uploadify.css'; ?>" type="text/css" rel="stylesheet" />
+        <script type="text/javascript" src="<?php echo base_url() . '../arquivos/libs/uploadify/jquery.uploadify.min.js'; ?>"></script>
 
         <!-- Bootstrap 3.3.5 -->
         <script src="<?php echo base_url(); ?>../arquivos/template/AdminLTE/bootstrap/js/bootstrap.min.js"></script>
@@ -87,7 +87,15 @@
         <link rel="stylesheet" href="<?php echo base_url(); ?>../arquivos/libs/bootstrap-table-filter/src/bootstrap-table-filter.css">
         <script src="<?php echo base_url(); ?>../arquivos/libs/bootstrap-table-filter/src/bootstrap-table-filter.js"></script>
 
-        <link rel="stylesheet" href="<?php echo base_url().'arquivos/css/backend.css'; ?>">
-        <script src="<?php echo base_url().'arquivos/js/backend.js'; ?>"></script>
+        <link rel="stylesheet" href="<?php echo base_url() . 'arquivos/css/backend.css'; ?>">
+        <script src="<?php echo base_url() . 'arquivos/js/backend.js'; ?>"></script>
+
+        <!-- fullCalendar 2.2.5-->
+        <link rel="stylesheet" href="<?php echo base_url(); ?>../arquivos/template/AdminLTE/plugins/fullcalendar/fullcalendar.min.css">
+        <link rel="stylesheet" href="<?php echo base_url(); ?>../arquivos/template/AdminLTE/plugins/fullcalendar/fullcalendar.print.css" media="print">
+
+        <!-- fullCalendar 2.2.5 -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.2/moment.min.js"></script>
+        <script src="<?php echo base_url(); ?>../arquivos/template/AdminLTE/plugins/fullcalendar/fullcalendar.min.js"></script>
     </head>
     <body class="hold-transition skin-blue sidebar-mini">
